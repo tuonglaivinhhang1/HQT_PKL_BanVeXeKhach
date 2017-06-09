@@ -110,7 +110,6 @@ create table CHUYENDI
 )
 
 --Tạo bảng VE
-
 create table VE
 (
 	MaVe varchar(10) primary key,
