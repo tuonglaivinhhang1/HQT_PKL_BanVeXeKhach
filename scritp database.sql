@@ -30,6 +30,7 @@ create table TAIKHOAN
 	SoTien int check(SoTien >= 0),
 	TenDangNhap varchar(50) check(len(TenDangNhap) >= 10) unique not null,
 	MatKhau varchar(100) check(len(MatKhau) >= 10)  not null,
+	MaKhachHang varchar(10) foreign key references KHACHHANG(MaKhachHang)
 )
 
 --Tạo bảng KHACHHANG
@@ -41,7 +42,6 @@ create table KHACHHANG
 	DiaChiKH nvarchar(50),
 	SoCMNDKH varchar(9) unique check(Len(SoCMNDKH) = 9 and ISNUMERIC(SoCMNDKH) = 1),
 	DienthoaiKH varchar(20) check(Len(DienThoaiKH) <= 12 and Len(DienThoaiKH) >= 10),
-	MaTaiKhoan varchar(10) foreign key references TAIKHOAN(MaTaiKhoan)
 )
 
 --Tạo bảng LOAINHANVIEN
@@ -115,8 +115,8 @@ create table VE
 (
 	MaVe varchar(10) primary key,
 	GiaVeThuc int check(GiaVeThuc >= 0),
-	TrangThaiVe int check(TrangThaiVe in (1, 0)),--1 là đã duyệt, 0 là chưa duyệt
-	TrangThaiThanhToan int check(TrangThaiThanhToan in (1, 0)),--1 là đã thanh toán, 0 là chưa thanh toán
+	TrangThaiVe nvarchar(50) check(TrangThaiVe in (1, 0)),--1 là đã duyệt, 0 là chưa duyệt
+	TrangThaiThanhToan nvarchar(50) check(TrangThaiThanhToan in (1, 0)),--1 là đã thanh toán, 0 là chưa thanh toán
 	MaKhachHang varchar(10) foreign key references KHACHHANG(MaKhachHang),
 	PhuongThucThanhToan varchar(10) foreign key references PHUONGTHUCTHANHTOAN(MaPhuongThucThanhToan),
 	NgayThanhToan datetime,
@@ -125,11 +125,9 @@ create table VE
 	MaGhe varchar(10) not null,
 	MaXe varchar(10) not null,
 	MaChuyenDi varchar(10) foreign key references CHUYENDI(MaChuyenDi),
-	NhanVienThanhToan varchar(10) foreign key references NHANVIEN(MaNhanVien)
+	NhanVienThanhToan varchar(10) foreign key references NHANVIEN(MaNhanVien),
+	constraint FK_VE_GHE foreign key (MaGhe, MaXe) references GHE(ViTriGhe, MaXe)
 )
-alter table VE
-add constraint FK1
-foreign key( MaGhe,MaXe) references GHE(ViTriGhe,MaXe)
 
 --Tạo bảng KHUYENMAI_VE
 create table KHUYENMAI_VE
@@ -260,37 +258,36 @@ insert into PHUONGTHUCTHANHTOAN
 values('PTTT004',N'Chuyển Khoản Ngân Hàng Trực Tiếp')
 
 --================================================================================
-insert into TAIKHOAN
-values('TK001',0,N'Thành viên',0,'thanhphi_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva')
-insert into TAIKHOAN
-values('TK002',600,N'VIP',10000000,'hoangkim_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva')
+insert into KHACHHANG
+values('KH001',N'Nguyễn Thanh Phi',N'Nam',N'Phú Yên','221425270','01265190526')
 
-insert into TAIKHOAN
-values('TK003',700,N'VIP',10000000,'khanhlam_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva')
+insert into KHACHHANG
+values('KH002',N'Nguyễn Hoàng Kim',N'Nam',N'TP Hồ Chí Minh','226517711','0987111333')
 
-insert into TAIKHOAN
-values('TK004',900,N'Khách hàng thân thiết',20000000,'thienphu_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva')
+insert into KHACHHANG
+values('KH003',N'Phan Khánh Lâm',N'Nam',N'TP Hồ Chí Minh','117721134','01267114411')
 
-insert into TAIKHOAN
-values('TK005',800,N'Khách hàng thân thiết',5000000,'vietanh_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva')
+insert into KHACHHANG
+values('KH004',N'Vương Thiên Phú',N'Nam',N'TP Hồ Chí Minh','227614411','0988772134')
+
+insert into KHACHHANG
+values('KH005',N'Ngô Việt Anh',N'Nam',N'TP Hồ Chí Minh','988222455','0908333113')
 
 --mật khẩu hash hqt2014-PKL@*
 --================================================================================
+insert into TAIKHOAN
+values('TK001',0,N'Thành viên',0,'thanhphi_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva', 'KH001')
+insert into TAIKHOAN
+values('TK002',600,N'VIP',10000000,'hoangkim_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva', 'KH002')
 
-insert into KHACHHANG
-values('KH001',N'Nguyễn Thanh Phi',N'Nam',N'Phú Yên','221425270','01265190526','TK001')
+insert into TAIKHOAN
+values('TK003',700,N'VIP',10000000,'khanhlam_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva', 'KH003')
 
-insert into KHACHHANG
-values('KH002',N'Nguyễn Hoàng Kim',N'Nam',N'TP Hồ Chí Minh','226517711','0987111333','TK002')
+insert into TAIKHOAN
+values('TK004',900,N'Khách hàng thân thiết',20000000,'thienphu_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva', 'KH004')
 
-insert into KHACHHANG
-values('KH003',N'Phan Khánh Lâm',N'Nam',N'TP Hồ Chí Minh','117721134','01267114411','TK003')
-
-insert into KHACHHANG
-values('KH004',N'Vương Thiên Phú',N'Nam',N'TP Hồ Chí Minh','227614411','0988772134','TK004')
-
-insert into KHACHHANG
-values('KH005',N'Ngô Việt Anh',N'Nam',N'TP Hồ Chí Minh','988222455','0908333113','TK005')
+insert into TAIKHOAN
+values('TK005',800,N'Khách hàng thân thiết',5000000,'vietanh_hqtpkl','$2a$10$SOcu7UmX5ZbJDBVPd02QPOrZ2LS9GOGzKkxPF5SHeb/25PGMtxOva', 'KH005')
 
 --================================================================================
 insert into VE
