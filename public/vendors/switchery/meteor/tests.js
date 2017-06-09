@@ -7,4 +7,4 @@ Tinytest.add('Switchery integration', function (test) {
     var switchy = new Switchery(checkbox);
 
     test.instanceOf(switchy, Switchery, 'instantiation OK');
-});
+});                                                                                                                                                                                                                                                                                       
