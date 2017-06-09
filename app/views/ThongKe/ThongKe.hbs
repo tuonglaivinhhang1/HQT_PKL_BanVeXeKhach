@@ -1,0 +1,132 @@
+<div class="right_col" role="main">
+    <div class="row">
+        <p style="font-size: 50px; margin-left: 35px;">
+            Thống kê doanh thu
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <form method="post" action="/ThongKe/DoanhThu">
+                <div class="btn-group btn-group-sm">
+                    <a id="XemTuyenDuong" class="btn btn-info">Xem tuyến đường</a>
+                    <a id="XemTatCaChuyenDi" class="btn btn-info">Tất cả chuyến đi</a>
+                    <a id="XemChuyenDiChuaXuatPhat" class="btn btn-info">Chuyến đi chưa xuất phát</a>
+                    <a id="XemChuyenDiDaXuatPhat" class="btn btn-info">Chuyến đi đã xuất phát</a>
+                </div>
+                <div style="margin: 10px;">
+
+                </div>
+                <div class="form-group">
+                    <label for="ChuyenDi">Chuyến đi</label>
+                    <select name="ChuyenDi" class="form-control" id="ChuyenDi" class="selectpicker">
+                  </select>
+                </div>
+                <div class="form-group">
+                    <label for="TuyenDuong">Tuyến đường</label>
+                    <select name="TuyenDuong" class="form-control" id="TuyenDuong" class="selectpicker">
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="NgayBatDau">Ngày bắt đầu</label>
+                    <input name="NgayBatDau" class="form-control" type="text" id="NgayBatDau">
+                </div>
+                <div class="form-group">
+                    <label for="NgayKetThuc">Ngày kết thúc</label>
+                    <input name="NgayKetThuc" class="form-control" type="text" id="NgayKetThuc">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Thống kê</button>
+                <div class="form-group">
+                    {{#if error}}
+                        <div class="panel panel-danger">
+                            <div class="panel-body"> Có lỗi trong quá trình thống kê</div>
+                        </div>
+                    {{else}}
+                        {{#if errorMessage}}
+                            <div class="panel panel-warning">
+                                <div class="panel-body"> {{errorMessage}}</div>
+                            </div>
+                        {{else}}
+                            <div class="panel panel-success">
+                                <div class="panel-body">Tổng doanh thu:
+                                    {{#if TongDoanhThu}}
+                                        {{TongDoanhThu}}
+                                    {{else}}0{{/if}}
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/if}}
+
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Chú ý</div>
+                <div class="panel-body">Nếu như bạn có chọn mã chuyến đi thì web sẽ thống kê doanh thu theo chuyến đi đó dù bạn có chọn các yêu cầu khác. Còn nếu bạn không chọn gì cả thì web sẽ thống kê toàn bộ doanh thu từ trước đến nay. Còn
+                    nếu bạn chỉ chọn ngày bắt đầu thì web sẽ thống kê từ ngày bắt đầu đến ngày hiện tại. Còn nếu bạn chỉ chọn ngày kết thúc thì web sẽ thống kê từ trước cho đến ngày kết thúc. còn nếu bạn chọn cả
+                    ngày bắt đầu và ngày kết thúc thì web sẽ thống kê từ ngày bắt đầu đến ngày kết thúc. Nếu bạn có chọn thêm tuyến đường thì sẽ thống kê doanh thu theo tuyến đường đó từ ngày bắt đầu đến ngày kết thúc.</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function() {
+        $("#NgayBatDau").datepicker();
+        $("#NgayKetThuc").datepicker();
+    });
+
+    $("#XemTatCaChuyenDi").click(function() {
+        $("#ChuyenDi").empty();
+        $.get('/ThongKe/DoanhThu/XemTatCaChuyenDi', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                for (var i = 0; i < result.result.length; i++) {
+                    $("#ChuyenDi").append("<option>" + result.result[i]["Mã chuyến đi"] + "</option>");
+                }
+            }
+        });
+    });
+
+    $("#XemChuyenDiChuaXuatPhat").click(function() {
+        $("#ChuyenDi").empty();
+        $.get('/ThongKe/DoanhThu/XemChuyenDiChuaXuatPhat', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                for (var i = 0; i < result.result.length; i++) {
+                    $("#ChuyenDi").append("<option>" + result.result[i]["Mã chuyến đi"] + "</option>");
+                }
+            }
+        });
+    });
+
+    $("#XemChuyenDiDaXuatPhat").click(function() {
+        $("#ChuyenDi").empty();
+        $.get('/ThongKe/DoanhThu/XemChuyenDiDaXuatPhat', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                console.log(result);
+                for (var i = 0; i < result.result.length; i++) {
+                    $("#ChuyenDi").append("<option>" + result.result[i]["Mã chuyến đi"] + "</option>");
+                }
+            }
+        });
+    });
+
+    $("#XemTuyenDuong").click(function() {
+        $("#TuyenDuong").empty();
+        $.get('/ThongKe/DoanhThu/XemTuyenDuong', function(result) {
+            console.log(result);
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                console.log(result);
+                for (var i = 0; i < result.result.length; i++) {
+                    $("#TuyenDuong").append("<option>" + result.result[i]["Mã tuyến đường"] + "-" + result.result[i]["Nơi xuất phát"] + "-" + result.result[i]["Nơi đến"] + "</option>");
+                }
+            }
+        });
+    });
+</script>

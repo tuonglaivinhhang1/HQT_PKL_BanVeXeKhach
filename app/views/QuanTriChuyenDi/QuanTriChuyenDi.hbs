@@ -1,0 +1,203 @@
+<div class="right_col" role="main">
+    <div class="row">
+        <p style="font-size: 50px; margin-left: 35px;">
+            Quản lý các chuyến đi
+        </p>
+        <div class="btn-group btn-group-sm">
+            <a id="XemTatCaChuyenDi" class="btn btn-info">Tất cả chuyến đi</a>
+            <a id="XemChuyenDiChuaXuatPhat" class="btn btn-info">Chuyến đi chưa xuất phát</a>
+            <a id="XemChuyenDiDaXuatPhat" class="btn btn-info">Chuyến đi đã xuất phát</a>
+        </div>
+        <div class="col-md-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var xemChuyenDi = function(result) {
+        var MyDateField = function(config) {
+            jsGrid.Field.call(this, config);
+        };
+
+        MyDateField.prototype = new jsGrid.Field({
+
+            css: "date-field", // redefine general property 'css'
+            align: "center", // redefine general property 'align'
+
+            myCustomProperty: "foo", // custom property
+
+            sorter: function(date1, date2) {
+                return new Date(date1) - new Date(date2);
+            },
+
+            itemTemplate: function(value) {
+                return new Date(value).toDateString();
+            },
+
+            insertTemplate: function(value) {
+                return this._insertPicker = $("<input>").datepicker({
+                    defaultDate: new Date()
+                });
+            },
+
+            editTemplate: function(value) {
+                return this._editPicker = $("<input>").datepicker().datepicker("setDate", new Date(value));
+            },
+
+            insertValue: function() {
+                return this._insertPicker.datepicker("getDate").toISOString();
+            },
+
+            editValue: function() {
+                return this._editPicker.datepicker("getDate").toISOString();
+            }
+        });
+
+        jsGrid.fields.date = MyDateField;
+
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "400px",
+
+            inserting: true,
+            editing: true,
+            sorting: true,
+            paging: true,
+            height: "auto",
+            filtering: true,
+            autoload: true,
+            controller: {
+                data: result.result,
+                loadData: function(filter) {
+                    return $.grep(this.data, function(item) {
+                        console.log(item["Mã chuyến đi"]);
+                        return (!filter["Mã chuyến đi"] || item["Mã chuyến đi"].indexOf(filter["Mã chuyến đi"]) >= 0) && (!filter["Mã tuyến đường"] || item["Mã tuyến đường"].indexOf(filter["Mã tuyến đường"]) >=
+                            0) && (!filter["Ngày giờ xuất phát"] || item["Ngày giờ xuất phát"].indexOf(filter["Ngày giờ xuất phát"]) >= 0) && (!filter["Ngày giờ đến"] || item["Ngày giờ đến"].indexOf(
+                            filter["Ngày giờ đến"]) >= 0) && (!filter["Mã xe"] || item["Mã xe"].indexOf(filter["Mã xe"]) >= 0) && (!filter["Giá dự kiến"] || item["Giá dự kiến"].indexOf(filter["Giá dự kiến"]) >=
+                            0);
+                    });
+                }
+            },
+
+
+            confirmDeleting: true,
+            deleteConfirm: "Bạn có chắc xóa không?",
+
+            fields: [{
+                    name: "Mã chuyến đi",
+                    type: "text",
+                    width: 50,
+                },
+                {
+                    name: "Mã tuyến đường",
+                    type: "text",
+                    width: 50,
+                    validate: "required"
+                },
+                {
+                    name: "Ngày giờ xuất phát",
+                    type: "text",
+                    width: 50,
+                    //                        type: "date",
+                    //                        myCustomProperty: "bar",
+                    validate: "required"
+                },
+                {
+                    name: "Ngày giờ đến",
+                    type: "text",
+                    width: 50,
+                    //                        type: "date",
+                    //                        myCustomProperty: "bar",
+                    validate: "required"
+                },
+                {
+                    name: "Mã xe",
+                    type: "text",
+                    width: 50,
+                    validate: "required"
+                },
+                {
+                    name: "Giá dự kiến",
+                    type: "number",
+                    width: 50
+                },
+                {
+                    name: "Giá mỗi quảng đường",
+                    type: "number",
+                    width: 50,
+                    validate: "required"
+                },
+                {
+                    type: "control"
+                }
+            ],
+            onItemDeleted: function(args) {
+                $.post("/QuanTriChuyenDi/XoaChuyenDi", args.item, function(result) {
+                    console.log(result);
+                    if (result.error) {
+                        alert(result.error);
+                    } else {
+                        if (result) {
+                            alert('Có lỗi trong quá trình xóa');
+                        }
+                    }
+                });
+            },
+            onItemInserted: function(args) {
+                console.log(args);
+                $.post("/QuanTriChuyenDi/ThemChuyenDi", args.item, function(result) {
+                    console.log(result);
+                    if (result.error) {
+                        alert(result.error);
+                    } else {
+                        if (result) {
+                            alert('Có lỗi trong quá trình thêm');
+                        }
+                    }
+                });
+            },
+            onItemUpdated: function(args) {
+                $.post("/QuanTriChuyenDi/CapNhatChuyenDi", args.item, function(result) {
+                    console.log(result);
+                    if (result.error) {
+                        alert(result.error);
+                    } else {
+                        if (result) {
+                            alert('Có lỗi trong quá trình cập nhật');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    $("#XemTatCaChuyenDi").click(function() {
+        $.get('/QuanTriChuyenDi/XemTatCaChuyenDi', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                xemChuyenDi(result);
+            }
+        });
+    });
+
+    $("#XemChuyenDiChuaXuatPhat").click(function() {
+        $.get('/QuanTriChuyenDi/XemChuyenDiChuaXuatPhat', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                xemChuyenDi(result);
+            }
+        });
+    });
+
+    $("#XemChuyenDiDaXuatPhat").click(function() {
+        $.get('/QuanTriChuyenDi/XemChuyenDiDaXuatPhat', function(result) {
+            if (result.error == 'error') {
+                alert('Có lỗi xảy ra: ' + error);
+            } else {
+                xemChuyenDi(result);
+            }
+        });
+    });
+</script>
