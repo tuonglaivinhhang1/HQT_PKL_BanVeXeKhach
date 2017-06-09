@@ -31,7 +31,7 @@ var ThongKe = {
                       callback(err, null);
                   }
 
-                  var MaTuyenDuong = TuyenDuong.slice(0, 9);
+                  var MaTuyenDuong = TuyenDuong.slice(0, 4);
 
                   if (NgayBatDau && NgayKetThuc) {
                     pool.request()
@@ -158,7 +158,7 @@ var ThongKe = {
                                   if (error) {
                                       callback(error, null);
                                   }
-                                  
+
                                   callback(null, result.output);
                               });
                         }
