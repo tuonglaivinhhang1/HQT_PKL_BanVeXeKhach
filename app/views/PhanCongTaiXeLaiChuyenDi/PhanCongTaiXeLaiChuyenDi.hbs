@@ -1,0 +1,49 @@
+<div class="right_col" role="main">
+    <div class="row">
+        <p style="font-size: 50px; margin-left: 35px;">
+            Phân công tài xế lái chuyến đi
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+            <form method="post" action="/PhanCongTaiXeLaiChuyenDi">
+                <div class="form-group">
+                    <label for="ChuyenDi">Chuyến đi</label>
+                    <select name="ChuyenDi" class="form-control" id="ChuyenDi" class="selectpicker">
+                      {{#chuyenDi dataChuyenDi}}{{/chuyenDi}}
+                  </select>
+                </div>
+                <div class="form-group">
+                    <label for="TaiXe">Tài xế</label>
+                    <select name="TaiXe" class="form-control" id="TaiXe" class="selectpicker">
+                      {{#taiXe dataTaiXe}}{{/taiXe}}
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="LoaiTaiXe">Loại tài xế</label>
+                    <input name="LoaiTaiXe" class="form-control" type="text" id="LoaiTaiXe">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Phân công</button>
+                <div class="form-group">
+                    {{#if error}}
+                        <div class="panel panel-danger">
+                            <div class="panel-body"> Có lỗi trong quá trình phân công</div>
+                        </div>
+                    {{else}}
+                        {{#if errorMessage}}
+                            <div class="panel panel-warning">
+                                <div class="panel-body"> {{errorMessage}}</div>
+                            </div>
+                        {{else}}
+                            {{#if success}}
+                                <div class="panel panel-success">
+                                    <div class="panel-body"> Phân công thành công!!!!</div>
+                                </div>
+                            {{/if}}
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

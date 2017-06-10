@@ -1,0 +1,104 @@
+<div class="right_col" role="main">
+    <div class="row">
+        <p style="font-size: 50px; margin-left: 35px;">
+            Quản lý các loại nhân viên
+        </p>
+        <div class="col-md-12">
+            <div id="jsGrid"></div>
+        </div>
+    </div>
+</div>
+<script>
+    $.get('/QuanTriLoaiNhanVien/XemLoaiNhanVien', function(result) {
+        console.log(result);
+        if (result.error == 'error') {
+            alert('Có lỗi xảy ra: ' + error);
+        } else {
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                height: "400px",
+
+                inserting: true,
+                editing: true,
+                sorting: true,
+                paging: true,
+                height: "auto",
+                filtering: true,
+                autoload: true,
+                controller: {
+                    data: result.result,
+                    loadData: function(filter) {
+                        return $.grep(this.data, function(item) {
+                            return (!filter["Mã loại nhân viên"] || item["Mã loại nhân viên"].indexOf(filter["Mã loại nhân viên"]) >= 0) &&
+                                (!filter["Tên loại nhân viên"] || item["Tên loại nhân viên"].indexOf(filter["Tên loại nhân viên"]) >= 0);
+                        });
+                    },
+                    updateItem: function(item) {
+                        var d = $.Deferred();
+                        $.post("/QuanTriLoaiNhanVien/CapNhatLoaiNhanVien", item, function(result) {
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.data) {
+                                    d.resolve(result.data[0]);
+                                } else {
+                                    alert('Có lỗi trong quá trình cập nhật');
+                                }
+                            }
+                        });
+
+                        return d.promise();
+                    },
+                    insertItem: function(item) {
+                        var d = $.Deferred();
+
+                        $.post("/QuanTriLoaiNhanVien/ThemLoaiNhanVien", item, function(result) {
+                            console.log(result);
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.data) {
+                                    d.resolve(result.data[0]);
+                                } else {
+                                    alert('Có lỗi trong quá trình thêm');
+                                }
+                            }
+                        });
+
+                        return d.promise();
+                    },
+                    deleteItem: function(item) {
+                        $.post("/QuanTriLoaiNhanVien/XoaLoaiNhanVien", item, function(result) {
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.error) {
+                                    alert('Có lỗi trong quá trình xóa');
+                                }
+                            }
+                        });
+                    }
+                },
+
+                confirmDeleting: true,
+                deleteConfirm: "Bạn có chắc xóa không?",
+
+                fields: [{
+                        name: "Mã loại nhân viên",
+                        type: "text",
+                        width: 50,
+                    },
+                    {
+                        name: "Tên loại nhân viên",
+                        type: "text",
+                        width: 50,
+                        validate: "required"
+                    },
+                    {
+                        type: "control"
+                    }
+                ]
+            });
+        }
+    });
+</script>
