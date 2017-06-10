@@ -61,30 +61,66 @@ var QuanTriChuyenDiController = {
         });
     },
     xoaChuyenDi: function(req, res) {
-        QuanTriChuyenDi.xoaChuyenDi(req.body["Mã chuyến đi"], function(result) {
-            if (result) {
-                res.send(result);
+        QuanTriChuyenDi.xoaChuyenDi(req.body["Mã chuyến đi"], function(error, errorMessage) {
+            var data = {
+                error: {},
+                errorMessage: ''
+            };
+            if (error) {
+                data.error = error;
+                res.send(data);
             } else {
-                res.send(null);
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    res.send(data);
+                }
             }
         });
     },
     themChuyenDi: function(req, res) {
-        QuanTriChuyenDi.themChuyenDi(req.body["Mã tuyến đường"], req.body["Ngày giờ xuất phát"], req.body["Ngày giờ đến"], req.body["Mã xe"], req.body["Giá mỗi quảng đường"], function(result) {
-            if (result) {
-                res.send(result);
+        QuanTriChuyenDi.themChuyenDi(req.body["Mã tuyến đường"], req.body["Ngày giờ xuất phát"], req.body["Ngày giờ đến"], req.body["Mã xe"], req.body["Giá mỗi quảng đường"], function(error, errorMessage, result) {
+            var data = {
+                error: {},
+                errorMessage: '',
+                data: {}
+            };
+
+            if (error) {
+                data.error = error;
+                res.send(data);
             } else {
-                res.send(null);
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    data.data = result;
+                    res.send(data);
+                }
             }
         });
     },
     capNhatChuyenDi: function(req, res) {
-        QuanTriChuyenDi.capNhatChuyenDi(req.body["Mã chuyến đi"], req.body["Mã tuyến đường"], req.body["Ngày giờ xuất phát"], req.body["Ngày giờ đến"], req.body["Mã xe"], req.body["Giá mỗi quảng đường"], function(result) {
-            if (result) {
-                res.send(result);
-            } else {
-                res.send(null);
-            }
+        QuanTriChuyenDi.capNhatChuyenDi(req.body["Mã chuyến đi"], req.body["Mã tuyến đường"], req.body["Ngày giờ xuất phát"], req.body["Ngày giờ đến"], req.body["Mã xe"], req.body["Giá mỗi quảng đường"], function(error, errorMessage, result) {
+          var data = {
+              error: {},
+              errorMessage: '',
+              data: []
+          };
+
+          if (error) {
+              data.error = error;
+              res.send(data);
+          } else {
+              if (errorMessage) {
+                  data.errorMessage = errorMessage;
+                  res.send(data);
+              } else {
+                  data.data = result;
+                  res.send(data);
+              }
+          }
         });
     },
 };

@@ -1,6 +1,6 @@
 var sql = require('mssql');
 
-var config=require('../../config/database');
+var config = require('../../config/database');
 
 var QuanTriLoaiNhanVien = {
     xemLoaiNhanVien: function(callback) {
@@ -39,11 +39,11 @@ var QuanTriLoaiNhanVien = {
                 .input('MaLoaiNV', sql.VarChar, MaLoaiNV)
                 .execute('xoaLoaiNhanVien', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
-
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                        callback(error, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error);
+                        }
                     }
                 });
         });
@@ -53,17 +53,29 @@ var QuanTriLoaiNhanVien = {
             if (err) {
                 callback(error);
             }
-
             pool.request()
                 .output('error', sql.NVarChar)
                 .input('TenLoaiNV', sql.NVarChar, TenLoaiNV)
                 .execute('themLoaiNhanVien', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã loại nhân viên": result.recordset[i].MaLoaiNV,
+                                    "Tên loại nhân viên": result.recordset[i].TenLoaiNV
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });
@@ -80,11 +92,24 @@ var QuanTriLoaiNhanVien = {
                 .input('TenLoaiNV', sql.NVarChar, TenLoaiNV)
                 .execute('capNhatLoaiNhanVien', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã loại nhân viên": result.recordset[i].MaLoaiNV,
+                                    "Tên loại nhân viên": result.recordset[i].TenLoaiNV
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });

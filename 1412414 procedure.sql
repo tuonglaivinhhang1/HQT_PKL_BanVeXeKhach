@@ -92,10 +92,18 @@ begin tran
 			end
 			else
 			begin
+				set @error = ''
+
 				--Thêm vào bảng tuyến đường
 				insert into PHUONGTRANG.DBO.TUYENDUONG(MaTuyenDuong , NoiXuatPhat, NoiDen, BenDi, BenDen, QuangDuong) values (@MaMoi, @NoiXuatPhat, @NoiDen, @BenDi, @BenDen, @QuangDuong)
 
-				set @error = ''
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
+					rollback
+				end
+
+				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaMoi
 
 				if (@@ERROR <> 0)
 				begin
@@ -216,12 +224,20 @@ begin tran
 		begin
 			if (@QuangDuong >= 0)
 			begin
+				set @error = ''
+
 				--Cập nhật tuyến đường
 				update PHUONGTRANG.DBO.TUYENDUONG
 				set NoiXuatPhat = @NoiXuatPhat, NoiDen = @NoiDen, QuangDuong = @QuangDuong, BenDi = @BenDi, BenDen = @BenDen
 				where MaTuyenDuong = @MaTuyenDuong
 
-				set @error = ''
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+					rollback
+				end
+
+				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaTuyenDuong
 
 				if (@@ERROR <> 0)
 				begin
@@ -477,6 +493,14 @@ begin tran
 								raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
 								rollback
 							end
+
+							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDiMoi
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
+								rollback
+							end
 						end
 					end
 					else
@@ -638,7 +662,15 @@ begin tran
 
 							if (@@ERROR <> 0)
 							begin
-								raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
+								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+								rollback
+							end
+
+							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDi
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
 								rollback
 							end
 						end
@@ -792,6 +824,14 @@ begin tran
 			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
 			rollback
 		end
+
+		select * from PHUONGTRANG.DBO.LOAINHANVIEN where MaLoaiNV = @MaLoaiNVMoi
+
+		if (@@ERROR <> 0)
+		begin
+			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
+			rollback
+		end
 	end
 commit tran
 
@@ -837,6 +877,14 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc cập nhật loại nhân viên', 0, 0)
+			rollback
+		end
+		
+		select * from PHUONGTRANG.DBO.LOAINHANVIEN where MaLoaiNV = @MaLoaiNV
+
+		if (@@ERROR <> 0)
+		begin
+			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
 			rollback
 		end
 	end

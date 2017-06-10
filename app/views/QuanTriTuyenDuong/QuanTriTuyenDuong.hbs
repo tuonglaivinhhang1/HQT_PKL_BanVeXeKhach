@@ -36,6 +36,56 @@
                                 (!filter["Quảng đường"] || item["Quảng đường"].indexOf(filter["Quảng đường"]) >= 0) &&
                                 (!filter["Bến đến"] || item["Bến đến"].indexOf(filter["Bến đến"]) >= 0);
                         });
+                    },
+                    updateItem: function(item) {
+                        var d = $.Deferred();
+
+                        $.post("/QuanTriTuyenDuong/CapNhatTuyenDuong", item, function(result) {
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.data) {
+
+                                    d.resolve(result.data[0]);
+
+                                } else {
+                                    alert('Có lỗi trong quá trình cập nhật');
+                                }
+                            }
+                        });
+
+                        return d.promise();
+                    },
+                    insertItem: function(item) {
+                        var d = $.Deferred();
+
+                        $.post("/QuanTriTuyenDuong/ThemTuyenDuong", item, function(result) {
+                            console.log(result);
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.data) {
+
+                                    d.resolve(result.data[0]);
+
+                                } else {
+                                    alert('Có lỗi trong quá trình thêm');
+                                }
+                            }
+                        });
+
+                        return d.promise();
+                    },
+                    deleteItem: function(item) {
+                        $.post("/QuanTriTuyenDuong/XoaTuyenDuong", item, function(result) {
+                            if (result.errorMessage) {
+                                alert(result.errorMessage);
+                            } else {
+                                if (result.error) {
+                                    alert('Có lỗi trong quá trình xóa');
+                                }
+                            }
+                        });
                     }
                 },
 
@@ -80,44 +130,7 @@
                     {
                         type: "control"
                     }
-                ],
-                onItemDeleted: function(args) {
-                    console.log(args.item["Nơi xuất phát"]);
-                    $.post("/QuanTriTuyenDuong/XoaTuyenDuong", args.item, function(result) {
-                        console.log(result);
-                        if (result.error) {
-                            alert(result.error);
-                        } else {
-                            if (result) {
-                                alert('Có lỗi trong quá trình xóa');
-                            }
-                        }
-                    });
-                },
-                onItemInserted: function(args) {
-                    $.post("/QuanTriTuyenDuong/ThemTuyenDuong", args.item, function(result) {
-                        console.log(result);
-                        if (result.error) {
-                            alert(result.error);
-                        } else {
-                            if (result) {
-                                alert('Có lỗi trong quá trình thêm');
-                            }
-                        }
-                    });
-                },
-                onItemUpdated: function(args) {
-                    $.post("/QuanTriTuyenDuong/CapNhatTuyenDuong", args.item, function(result) {
-                        console.log(result);
-                        if (result.error) {
-                            alert(result.error);
-                        } else {
-                            if (result) {
-                                alert('Có lỗi trong quá trình cập nhật');
-                            }
-                        }
-                    });
-                }
+                ]
             });
         }
     });

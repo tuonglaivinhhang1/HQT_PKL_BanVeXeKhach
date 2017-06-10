@@ -76,9 +76,55 @@
                             filter["Ngày giờ đến"]) >= 0) && (!filter["Mã xe"] || item["Mã xe"].indexOf(filter["Mã xe"]) >= 0) && (!filter["Giá dự kiến"] || item["Giá dự kiến"].indexOf(filter["Giá dự kiến"]) >=
                             0);
                     });
+                },
+                updateItem: function(item) {
+                    var d = $.Deferred();
+
+                    $.post("/QuanTriChuyenDi/CapNhatChuyenDi", item, function(result) {
+                        if (result.errorMessage) {
+                            alert(result.errorMessage);
+                        } else {
+                            if (result.data) {
+                                d.resolve(result.data[0]);
+                            } else {
+                                alert('Có lỗi trong quá trình cập nhật');
+                            }
+                        }
+                    });
+                    
+                    return d.promise();
+                },
+                insertItem: function(item) {
+                    var d = $.Deferred();
+
+                    $.post("/QuanTriChuyenDi/ThemChuyenDi", item, function(result) {
+                        console.log(result);
+                        if (result.errorMessage) {
+                            alert(result.errorMessage);
+                        } else {
+                            if (result.data) {
+                                d.resolve(result.data[0]);
+
+                            } else {
+                                alert('Có lỗi trong quá trình thêm');
+                            }
+                        }
+                    });
+
+                    return d.promise();
+                },
+                deleteItem: function(item) {
+                    $.post("/QuanTriChuyenDi/XoaChuyenDi", item, function(result) {
+                        if (result.errorMessage) {
+                            alert(result.errorMessage);
+                        } else {
+                            if (result.error) {
+                                alert('Có lỗi trong quá trình xóa');
+                            }
+                        }
+                    });
                 }
             },
-
 
             confirmDeleting: true,
             deleteConfirm: "Bạn có chắc xóa không?",
@@ -130,44 +176,7 @@
                 {
                     type: "control"
                 }
-            ],
-            onItemDeleted: function(args) {
-                $.post("/QuanTriChuyenDi/XoaChuyenDi", args.item, function(result) {
-                    console.log(result);
-                    if (result.error) {
-                        alert(result.error);
-                    } else {
-                        if (result) {
-                            alert('Có lỗi trong quá trình xóa');
-                        }
-                    }
-                });
-            },
-            onItemInserted: function(args) {
-                console.log(args);
-                $.post("/QuanTriChuyenDi/ThemChuyenDi", args.item, function(result) {
-                    console.log(result);
-                    if (result.error) {
-                        alert(result.error);
-                    } else {
-                        if (result) {
-                            alert('Có lỗi trong quá trình thêm');
-                        }
-                    }
-                });
-            },
-            onItemUpdated: function(args) {
-                $.post("/QuanTriChuyenDi/CapNhatChuyenDi", args.item, function(result) {
-                    console.log(result);
-                    if (result.error) {
-                        alert(result.error);
-                    } else {
-                        if (result) {
-                            alert('Có lỗi trong quá trình cập nhật');
-                        }
-                    }
-                });
-            }
+            ]
         });
     }
 

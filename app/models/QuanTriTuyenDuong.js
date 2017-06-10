@@ -1,6 +1,6 @@
 var sql = require('mssql');
 
-var config=require('../../config/database');
+var config = require('../../config/database');
 
 var QuanTriTuyenDuong = {
     xemTuyenDuong: function(callback) {
@@ -43,11 +43,12 @@ var QuanTriTuyenDuong = {
                 .input('MaTuyenDuong', sql.VarChar, MaTuyenDuong)
                 .execute('xoaTuyenDuong', function(error, result) {
                     if (error) {
-                        callback(error);
+                        callback(error, null);
                     }
-
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                    else {
+                      if (result.output.error) {
+                        callback(null, result.output.error);
+                      }
                     }
                 });
         });
@@ -67,11 +68,28 @@ var QuanTriTuyenDuong = {
                 .input('QuangDuong', sql.Int, QuangDuong)
                 .execute('themTuyenDuong', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã tuyến đường": result.recordset[i].MaTuyenDuong,
+                                    "Nơi xuất phát": result.recordset[i].NoiXuatPhat,
+                                    "Nơi đến": result.recordset[i].NoiDen,
+                                    "Bến đi": result.recordset[i].BenDi,
+                                    "Bến đến": result.recordset[i].BenDen,
+                                    "Quảng đường": result.recordset[i].QuangDuong
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });
@@ -92,11 +110,28 @@ var QuanTriTuyenDuong = {
                 .input('QuangDuong', sql.Int, QuangDuong)
                 .execute('capNhatTuyenDuong', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã tuyến đường": result.recordset[i].MaTuyenDuong,
+                                    "Nơi xuất phát": result.recordset[i].NoiXuatPhat,
+                                    "Nơi đến": result.recordset[i].NoiDen,
+                                    "Bến đi": result.recordset[i].BenDi,
+                                    "Bến đến": result.recordset[i].BenDen,
+                                    "Quảng đường": result.recordset[i].QuangDuong
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });

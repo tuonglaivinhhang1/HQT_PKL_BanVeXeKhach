@@ -1,6 +1,6 @@
 var sql = require('mssql');
 
-var config=require('../../config/database');
+var config = require('../../config/database');
 
 var QuanTriChuyenDi = {
     xemTatCaChuyenDi: function(callback) {
@@ -104,11 +104,11 @@ var QuanTriChuyenDi = {
                 .input('MaChuyenDi', sql.VarChar, MaChuyenDi)
                 .execute('xoaChuyenDi', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
-
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                        callback(error, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error);
+                        }
                     }
                 });
         });
@@ -128,11 +128,29 @@ var QuanTriChuyenDi = {
                 .input('GiaMoiQuangDuong', sql.Int, GiaMoiQuangDuong)
                 .execute('themChuyenDi', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã chuyến đi": result.recordset[i].MaChuyenDi,
+                                    "Mã tuyến đường": result.recordset[i].TuyenDuong,
+                                    "Ngày giờ xuất phát": result.recordset[i].NgayGioXuatPhat,
+                                    "Ngày giờ đến": result.recordset[i].NgayGioDen,
+                                    "Mã xe": result.recordset[i].Xe,
+                                    "Giá dự kiến": result.recordset[i].GiaDuKien,
+                                    "Giá mỗi quảng đường": 0,
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });
@@ -142,7 +160,7 @@ var QuanTriChuyenDi = {
             if (err) {
                 callback(error);
             }
-
+            
             pool.request()
                 .output('error', sql.NVarChar)
                 .input('MaChuyenDi', sql.VarChar, MaChuyenDi)
@@ -153,11 +171,29 @@ var QuanTriChuyenDi = {
                 .input('GiaMoiQuangDuong', sql.Int, GiaMoiQuangDuong)
                 .execute('capNhatChuyenDi', function(error, result) {
                     if (error) {
-                        callback(error);
-                    }
+                        callback(error, null, null);
+                    } else {
+                        if (result.output.error) {
+                            callback(null, result.output.error, null);
+                        } else {
+                            console.log(result);
+                            var data = [];
 
-                    if (result.output.error !== '') {
-                        callback(result.output);
+                            for (i = 0; i < result.recordsets[0].length; i++) {
+                                data[i] = {
+                                    "Mã chuyến đi": result.recordset[i].MaChuyenDi,
+                                    "Mã tuyến đường": result.recordset[i].TuyenDuong,
+                                    "Ngày giờ xuất phát": result.recordset[i].NgayGioXuatPhat,
+                                    "Ngày giờ đến": result.recordset[i].NgayGioDen,
+                                    "Mã xe": result.recordset[i].Xe,
+                                    "Giá dự kiến": result.recordset[i].GiaDuKien,
+                                    "Giá mỗi quảng đường": 0,
+                                };
+                            }
+
+                            console.log(data);
+                            callback(null, null, data);
+                        }
                     }
                 });
         });

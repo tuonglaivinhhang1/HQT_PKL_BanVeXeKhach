@@ -3,7 +3,7 @@ var QuanTriLoaiNhanVien = require('../models/QuanTriLoaiNhanVien');
 var QuanTriLoaiNhanVienController = {
     index: function(req, res) {
         res.render('QuanTriLoaiNhanVien/QuanTriLoaiNhanVien', {
-          title: 'Quản lý loại nhân viên'
+            title: 'Quản lý loại nhân viên'
         });
     },
     xemLoaiNhanVien: function(req, res) {
@@ -25,29 +25,65 @@ var QuanTriLoaiNhanVienController = {
         });
     },
     xoaLoaiNhanVien: function(req, res) {
-        QuanTriLoaiNhanVien.xoaLoaiNhanVien(req.body["Mã loại nhân viên"], function(result) {
-            if (result) {
-                res.send(result);
+        QuanTriLoaiNhanVien.xoaLoaiNhanVien(req.body["Mã loại nhân viên"], function(error, errorMessage) {
+            var data = {
+                error: {},
+                errorMessage: ''
+            };
+            if (error) {
+                data.error = error;
+                res.send(data);
             } else {
-                res.send(null);
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    res.send(data);
+                }
             }
         });
     },
     themLoaiNhanVien: function(req, res) {
-        QuanTriLoaiNhanVien.themLoaiNhanVien(req.body["Tên loại nhân viên"], function(result) {
-          if (result) {
-              res.send(result);
+        QuanTriLoaiNhanVien.themLoaiNhanVien(req.body["Tên loại nhân viên"], function(error, errorMessage, result) {
+          var data = {
+              error: {},
+              errorMessage: '',
+              data: {}
+          };
+
+          if (error) {
+              data.error = error;
+              res.send(data);
           } else {
-              res.send(null);
+              if (errorMessage) {
+                  data.errorMessage = errorMessage;
+                  res.send(data);
+              } else {
+                  data.data = result;
+                  res.send(data);
+              }
           }
         });
     },
     capNhatLoaiNhanVien: function(req, res) {
-        QuanTriLoaiNhanVien.capNhatLoaiNhanVien(req.body["Mã loại nhân viên"], req.body["Tên loại nhân viên"], function(result) {
-          if (result) {
-              res.send(result);
+        QuanTriLoaiNhanVien.capNhatLoaiNhanVien(req.body["Mã loại nhân viên"], req.body["Tên loại nhân viên"], function(error, errorMessage, result) {
+          var data = {
+              error: {},
+              errorMessage: '',
+              data: []
+          };
+
+          if (error) {
+              data.error = error;
+              res.send(data);
           } else {
-              res.send(null);
+              if (errorMessage) {
+                  data.errorMessage = errorMessage;
+                  res.send(data);
+              } else {
+                  data.data = result;
+                  res.send(data);
+              }
           }
         });
     },
