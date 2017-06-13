@@ -1,46 +1,27 @@
 
 module.exports={
-	setSelected:function(valueSelected)//message là tham số helpers gọi, ở đây là detailMessage
-			{
-				
-
-				if(valueSelected==undefined)
-				{
-					return "";
-				}
-				if(valueSelected.message2.toLowerCase()=="còn hàng")
-				{
-					return '<option value="CH" selected>Còn Hàng</option> <option value="SCH">Sắp Có Hàng</option> <option value="NKD">Ngừng Kinh Doanh</option>';
-				}
-				if(valueSelected.message2.toLowerCase()=="sắp có hàng")
-				{
-					return '<option value="CH">Còn Hàng</option> <option value="SCH" selected>Sắp Có Hàng</option> <option value="NKD">Ngừng Kinh Doanh</option>';
-				}
-				if(valueSelected.message2.toLowerCase()=="ngừng kinh doanh")
-				{
-					return '<option value="CH">Còn Hàng</option> <option value="SCH" >Sắp Có Hàng</option> <option  value="NKD" selected>Ngừng Kinh Doanh</option>';
-				}
-
-				return "";
-			},
-
+	
 	setSelectedcategory:function(valueSelected)
 	{
 				if(valueSelected==undefined)
 				{
 					return "";
 				}
-				if(valueSelected.message.toLowerCase()=="laptop")
+				if(valueSelected.message.toLowerCase()=="tài xế")
 				{
-					return '<option value="Mo">Mobile</option> <option value="Ka">Karaoke</option> <option value="La" selected>Laptop</option>';
+					return '<option value="tx" selected>Tài Xế</option> <option value="dv">Nhân Viên Đặt Vé</option> <option value="ql" >Nhân Viên Quản Lý</option> <option value="tt" >Nhân Viên Thanh Toán</option>';
 				}
-				if(valueSelected.message.toLowerCase()=="mobile")
+				if(valueSelected.message.toLowerCase()=="nhân viên quản lý")
 				{
-					return '<option value="Mo" selected>Mobile</option> <option value="Ka">Karaoke</option> <option value="La" >Laptop</option>';
+					return '<option value="tx" >Tài Xế</option> <option value="dv">Nhân Viên Đặt Vé</option> <option value="ql" selected>Nhân Viên Quản Lý</option> <option value="tt" >Nhân Viên Thanh Toán</option>';
 				}
-				if(valueSelected.message.toLowerCase()=="karaoke")
+				if(valueSelected.message.toLowerCase()=="nhân viên đặt vé")
 				{
-					return '<option value="Mo" >Mobile</option> <option value="Ka" selected>Karaoke</option> <option value="La" >Laptop</option>';
+					return '<option value="tx" >Tài Xế</option> <option value="dv" selected>Nhân Viên Đặt Vé</option> <option value="ql" >Nhân Viên Quản Lý</option> <option value="tt" >Nhân Viên Thanh Toán</option>';
+				}
+				if(valueSelected.message.toLowerCase()=="nhân viên thanh toán")
+				{
+					return '<option value="tx" >Tài Xế</option> <option value="dv">Nhân Viên Đặt Vé</option> <option value="ql" >Nhân Viên Quản Lý</option> <option value="tt" selected >Nhân Viên Thanh Toán</option>';
 				}
 
 				return "";

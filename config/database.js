@@ -1,5 +1,5 @@
 const config = {
-    user: 'thanhphi',
+    user: 'sa',
     password: 'Tietkhaiky2',
     server: 'localhost',
 

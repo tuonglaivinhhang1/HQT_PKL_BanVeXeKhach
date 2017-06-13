@@ -31,9 +31,29 @@
                     <p class="text-muted font-13 m-b-30">
                      
                     </p>
+
+                    <form id="searchnhanvien">
+                     
+                      
+                    
+                            
+                              <div class="input-group">
+                                <input type="number" id="tbcmnd" placeholder="Nhập Số CMND nhân viên..." class="form-control">
+                                <span class="input-group-btn">
+                                  <input type="submit" id="searchnvcmnd" class="btn btn-primary" value="Search">
+                                  </span>
+                              </div>
+                      
+
+                    </form>
                   
                     <button style="float: right;" class="btn btn-primary" type="submit"><a href="#" style="text-decoration: none;color:white">Thêm Nhân Viên</a></button>
                  
+                 <!-- tim nhan vien by CMND -->
+                
+                        
+
+
                     <table id="datatable" class="table table-striped table-bordered">
                       <thead>
                         <tr>
@@ -49,6 +69,7 @@
                           <th>Salary</th>
                           <th>DriverLicense</th>
                           <th>Ability(km)</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
 
@@ -70,7 +91,7 @@
                           <td>{{this.KhaNangLaiDuongDai}}</td>
                           <td>
                             <a href="#" class="btn btn-success">Xem</a>
-                            <a href="#" class="btn btn-warning">Sửa</a>
+                            <a href="/admin/listnhanvien/update/nv={{this.MaNhanVien}}" class="btn btn-warning">Sửa</a>
                           </td>
                         </tr>
                         {{/each}}
@@ -78,8 +99,111 @@
                       </tbody>
                     </table>
                   </div>
+                 
                 </div>
+                <p class="notify" style="color: red;font-size: 18px;"></p>
+
+              </div>
+
+              </div>
+
               </div>
               </div>
-              </div>
-              </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+                  $(document).ready(function() {
+
+                    var frm = $('#searchnhanvien');
+                    var bodytag=$('body');
+                    var urlimage='/images/loadgif.gif';
+
+
+                    // var data = frm.serialize();
+
+                    frm.submit(function(e){
+
+                       e.preventDefault(); // avoid to execute the actual submit of the form.
+    
+                       //hiệu ứng asyn
+
+ 
+                      $('body').append('<div id="requestOverlay" class="request-overlay"></div>');
+                      $("#requestOverlay").show();/*Show overlay*/
+
+                          $.ajax({
+
+                              type:'GET',
+                              url:'/admin/listnhanvien/finnvbycmnd?tbcmnd='+$('#tbcmnd').val(),
+                              
+                              dataType: 'json', 
+                              async: true,
+                               contentType: 'application/json; charset=utf-8',
+
+                            
+                           
+                              success:function(result)
+                              {
+                               
+                               var tbodyobj=$('tbody');
+                               var notify=$('.notify');
+
+
+                                if(result == null)
+                                {
+                                 notify.empty();
+                                notify.append('Không tìm thấy nhân viên nào');
+
+                                  tbodyobj.empty();
+                               
+
+                                  
+
+
+                                }
+                                else{
+                                  notify.empty();
+
+                                  tbodyobj.empty();
+                                  tbodyobj.append('\
+                                    <tr>\
+                          <td>'+result.MaNhanVien+'</td>\
+                          <td>'+result.TenNhanVien+'</td>\
+                          <td>'+result.GioiTinhNV+'</td>\
+                          <td>'+result.DiaChiNV+'</td>\
+                          <td>'+result.SoCMNDNV+'</td>\
+                          <td>'+result.NgaySinhNV+'</td>\
+                          <td>'+result.DienthoaiNV+'</td>\
+                          <td>'+result.TenDangNhapNV+'</td>\
+                          <td>'+result.LoaiNhanVien+'</td>\
+                          <td>'+result.Luong+'</td>\
+                          <td>'+result.BangLai+'</td>\
+                          <td>'+result.KhaNangLaiDuongDai+'</td>\
+                          <td>\
+                            <a href="#" class="btn btn-success">Xem</a>\
+                            <a href="/admin/listnhanvien/update/nv='+result.MaNhanVien+'" class="btn btn-warning">Sửa</a>\
+                          </td>\
+                        </tr>\
+                                    ');
+
+                                  // /c/console.log(result[0].DiaChiNV);
+
+                                }
+                              
+                              },
+                              error:function(err)
+                              {
+                                console.log(err);
+                              },
+                              complete:function()
+                              {
+                                 $("#requestOverlay").remove();/*Remove overlay*/
+                              }
+                          });                 
+                        
+                    });
+
+                   
+                  });
+          </script>
+

@@ -2,7 +2,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Cập Nhật Thông Tin Sản Phẩm</h3>
+                <h3>Cập Nhật Thông Tin Nhân Viên</h3>
               </div>
 
               
@@ -13,7 +13,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Cập Nhật sản phẩm</h2>
+                    <h2>Cập Nhật Nhân Viên</h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -32,46 +32,107 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                      <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
-                          <div class="profile_img">
-                              <div id="crop-avatar">
-                                  <!-- Current avatar -->
-                                  <img class="img-responsive avatar-view" src="{{CurrentProduct.urlimage}}" alt="Avatar">
-                              </div>
-                          </div>
-                          <h3>{{CurrentProduct.name}}</h3>
-                                        
-                    </div>
+                     
                     <div class="col-md-9 col-sm-9 col-xs-12"> 
                     <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                    <form action="/listproducts/update/success" method="POST" class="form-horizontal form-label-left" novalidate>
-
+                    <form action="/admin/listnhanvien/update/success" method="POST" class="form-horizontal form-label-left" novalidate>
+                    
+                   
                      
-                      <span class="section">Cập Nhật sản phẩm</span>
+                      <span class="section">Cập Nhật Nhân Viên</span>
                       <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Mã Sản Phẩm <span class="required" style="color:red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Mã Nhân Viên <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" readonly class="form-control col-md-7 col-xs-12"  value="{{CurrentProduct.id}}"  name="masanpham"  required type="text">
+                          <input id="name" readonly class="form-control col-md-7 col-xs-12"  value="{{CurrentNhanVien.MaNhanVien}}"  name="manhanvien"  required type="text">
                         </div>
                       </div>
 
                       <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Tên Sản Phẩm <span class="required" style="color:red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Tên Nhân Viên <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentProduct.name}}" data-validate-words="2" name="name"  required type="text">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.TenNhanVien}}" data-validate-words="2" name="name"  required type="text">
                         </div>
                       </div>
+                      
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Giới Tính <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.GioiTinhNV}}" data-validate-words="2" name="gioitinh"  required type="text">
+                        </div>
+                      </div>
+                      
+
+
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Địa Chỉ <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.DiaChiNV}}" data-validate-words="2" name="diachi"  required type="text">
+                        </div>
+                      </div>
+                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">CMND <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.SoCMNDNV}}" data-validate-words="2" name="cmnd"  required type="text">
+                        </div>
+                      </div>
+                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Điện Thoại <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.DienthoaiNV}}" data-validate-words="2" name="dienthoai"  required type="text">
+                        </div>
+                      </div>
+
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Ngày Sinh <span class="required" style="color:red">*</span>
+                        </label>
+                     
+                          <fieldset>
+                          <div class="control-group">
+                            <div class="controls">
+                              <div class="col-md-5 xdisplay_inputx form-group has-feedback">
+                                <input type="text" class="form-control has-feedback-left" id="single_cal1" name="ngaysinh" value={{CurrentNhanVien.NgaySinhNV}} aria-describedby="inputSuccess2Status">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                                <span id="inputSuccess2Status" class="sr-only">(success)</span>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                      
+                      </div>
+
+
+                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Tên Đăng Nhập <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" readonly class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.TenDangNhapNV}}" data-validate-words="2" name="tdn"  required type="text">
+                        </div>
+                      </div>
+
+                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Mật Khẩu <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="name" readonly class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.MatKhauNV}}" data-validate-words="2" name="mk"  required type="text">
+                        </div>
+                      </div>
+        
+
 
                       <div class="item form-group">
                         
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Loại Sản Phẩm <span class="required" style="color:red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Loại Nhân Viên <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-6">
                           <select name="Category"   required class="select2_single form-control" tabindex="-1">
 
-                            <option></option>
+                            
                             {{#setSelectedcategory SelectedValue}}
                              
 
@@ -85,65 +146,33 @@
 
                      
                       <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Giá Gốc Sản Phẩm <span class="required" style="color:red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Bằng Lái 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" id="number" name="price" value="{{CurrentProduct.price}}" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" value="{{CurrentNhanVien.BangLai}}" data-validate-words="2" name="banglai"  required type="text">
                         </div>
-                      </div>
-                     
-                      
-                     <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Ngày Nhập Sản Phẩm <span class="required" style="color:red">*</span>
-                        </label>
-                     
-                          <fieldset>
-                          <div class="control-group">
-                            <div class="controls">
-                              <div class="col-md-5 xdisplay_inputx form-group has-feedback">
-                                <input type="text" class="form-control has-feedback-left" id="single_cal1" name="DateAdd"  aria-describedby="inputSuccess2Status">
-                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                                <span id="inputSuccess2Status" class="sr-only">(success)</span>
-                              </div>
-                            </div>
-                          </div>
-                        </fieldset>
-                      
                       </div>
 
                       <div class="item form-group">
-                        
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tình Trạng Sản Phẩm <span class="required" style="color:red">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-6">
-                          <select name="status"   required class="select2_single form-control" tabindex="-1">
-
-                            <option></option>
-                            {{#setSelected SelectedValue}}
-                             
-
-                           {{/setSelected}}
-                    
-                          </select>
-                        </div>
-                    
-                      </div>
-                      
-                      <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Số Lượng Sản Phẩm <span class="required" style="color:red" >*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Khả Năng Lái Đường Dài 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" value="{{CurrentProduct.quantity}}" id="number" name="quantity" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                          <input type="number" value="{{CurrentNhanVien.KhaNangLaiDuongDai}}" id="number" name="khanang" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      
+                     
+                     
+                      
+                      <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Lương <span class="required" style="color:red" >*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="number" value="{{CurrentNhanVien.Luong}}" id="number" name="luong" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                        
-                      <div class="item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="textarea">Mô tả sơ lược
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <textarea id="textarea"  name="description" class="form-control col-md-7 col-xs-12">{{CurrentProduct.description}}</textarea>
-                        </div>
-                      </div>
+                     
                       <div class="ln_solid"></div>
                       <div class="form-group">
                         <div class="col-md-6 col-md-offset-3">

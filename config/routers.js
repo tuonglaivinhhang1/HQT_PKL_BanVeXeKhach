@@ -43,13 +43,16 @@ module.exports=function(app)
 
 	var listNhanVien=Router()
 		.get('/',controllers.nhanvien.index)
+
+		// call by Ajax
+		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
 		// .get('/addnhanvien',controllers.nhanvien.add)
 		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
 	
-		// .get('/update/sp=:id',controllers.nhanvien.update)
+		.get('/update/nv=:id',controllers.nhanvien.update)
 		// .post('/delete/success',controllers.nhanvien.delete)
 		// .post('/addnhanvien/success',controllers.nhanvien.addSuccess)
-		// .post('/update/success',controllers.nhanvien.updateSuccess);
+		.post('/update/success',controllers.nhanvien.updateSuccess);
 
 	var login=Router()
 		.get('/',controllers.login.index);
@@ -62,6 +65,7 @@ module.exports=function(app)
 	app.use('/admin/login',isloginedIn2,login);
 	
 
+	
 	
 	
 
