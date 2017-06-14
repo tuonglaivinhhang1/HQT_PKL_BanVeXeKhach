@@ -1,7 +1,7 @@
 const config = {
     user: 'sa',
-    password: 'vuongngockim',
-    server: 'localhost\\ENTERPRISE',
+    password: 'Tietkhaiky2',
+    server: 'localhost',
 
     database: 'PHUONGTRANG',
     stream: true,

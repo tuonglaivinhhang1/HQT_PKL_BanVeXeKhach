@@ -8,6 +8,7 @@
 ----------------------------------------------------------------------
 
 --Kiểm tra nơi xuất phát và nơi đến có trùng hay không
+go
 ------------------------------------------------------
 create procedure noiXuatPhatNoiDenKhacNhau @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50)
 as
