@@ -100,7 +100,8 @@ begin tran
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 
 				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaMoi
@@ -108,7 +109,8 @@ begin tran
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 			end
 		end
@@ -121,7 +123,7 @@ begin tran
 	begin
 		set @error = 'Nơi đến và nơi xuất phát phải khác nhau'
 	end
-commit tran
+commit tran tran
 
 ------------------------XÓA TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
@@ -182,7 +184,8 @@ begin tran
 			if (@@ERROR <> 0)
 			begin
 				raiserror('Có lỗi trong lúc xóa dữ liệu', 0, 0)
-				rollback
+				rollback tran 
+				return
 			end
 			else
 			begin
@@ -234,7 +237,8 @@ begin tran
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 
 				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaTuyenDuong
@@ -242,7 +246,8 @@ begin tran
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 			end
 			else
@@ -268,10 +273,31 @@ as
 begin tran
 	select * from PHUONGTRANG.DBO.TUYENDUONG
 
+	waitfor delay '00:00:05'
+
 	if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc tìm kiếm dữ liệu', 0, 0)
-		rollback
+		rollback tran 
+		return
+	end
+commit tran
+
+------------------------XEM TUYẾN ĐƯỜNG-------------------------------
+----------------------------------------------------------------------
+create procedure xemTuyenDuongISO
+as
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+begin tran
+	select * from PHUONGTRANG.DBO.TUYENDUONG
+
+	waitfor delay '00:00:05'
+
+	if (@@ERROR <> 0)
+	begin
+		raiserror('Có lỗi trong lúc tìm kiếm dữ liệu', 0, 0)
+		rollback tran 
+		return
 	end
 commit tran
 
@@ -491,7 +517,8 @@ begin tran
 							if (@@ERROR <> 0)
 							begin
 								raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
-								rollback
+								rollback tran 
+								return
 							end
 
 							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDiMoi
@@ -499,7 +526,8 @@ begin tran
 							if (@@ERROR <> 0)
 							begin
 								raiserror('Có lỗi trong lúc thêm dữ liệu', 0, 0)
-								rollback
+								rollback tran 
+								return
 							end
 						end
 					end
@@ -592,7 +620,8 @@ begin tran
 			if (@@ERROR <> 0)
 			begin
 				raiserror('Có lỗi trong lúc xóa dữ liệu', 0, 0)
-				rollback
+				rollback tran 
+				return
 			end
 		end
 		else
@@ -663,7 +692,8 @@ begin tran
 							if (@@ERROR <> 0)
 							begin
 								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-								rollback
+								rollback tran 
+								return
 							end
 
 							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDi
@@ -671,8 +701,112 @@ begin tran
 							if (@@ERROR <> 0)
 							begin
 								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-								rollback
+								rollback tran 
+								return
 							end
+						end
+						else
+						begin
+							set @error = 'Giá mỗi quảng đường phải lớn hơn hoặc bằng 0'
+						end
+					end
+					else
+					begin
+						set @error = 'Xe đã được sử dụng'
+					end
+				end
+				else
+				begin
+					set @error = 'Ngày giờ xuất phát lớn hơn hoặc bằng ngày giờ đến'
+				end
+			end
+			else
+			begin
+				set @error = 'Không tồn tại tuyến đường này'
+			end
+		end
+		else
+		begin
+			set @error = 'Không tồn tại xe này'
+		end
+	end
+	else
+	begin
+		set @error = 'Không tồn tại chuyến đi này'
+	end
+commit tran
+
+--Procedure cập nhật chuyến đi rollback tran
+---------------------------------------
+create procedure capNhatChuyenDiRollback @MaChuyenDi varchar(10), @MaTuyenDuong varchar(10), @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @GiaMoiQuangDuong int, @error nvarchar(100) out
+as
+begin tran
+	--declare
+	declare @chuyenDiCoTonTai int
+	declare @ngayGioXuatPhatNhoHonNgayGioDen int
+	declare @xeChuaDuocSuDung int
+	declare @GiaDuKien int
+	declare @xeCoTonTai int
+	declare @tuyenDuongCoTonTai int
+
+	--Kiểm tra chuyến đi có tồn tại
+	exec @chuyenDiCoTonTai = chuyenDiCoTonTai @MaChuyenDi
+
+	if (@chuyenDiCoTonTai = 1)
+	begin
+		--Kiểm tra mã xe này có tồn tại hay không
+		exec @xeCoTonTai = xeCoTonTai @MaXe
+
+		if (@xeCoTonTai = 1)
+		begin
+			exec @tuyenDuongCoTonTai = tuyenDuongCoTonTai @MaTuyenDuong
+
+			if (@tuyenDuongCoTonTai = 1)
+			begin
+				--Kiêm tra ngày giờ xuất phát có nhỏ hơn ngày giờ đến
+				exec @ngayGioXuatPhatNhoHonNgayGioDen = ngayGioXuatPhatNhoHonNgayGioDen @NgayGioXuatPhat, @NgayGioDen
+
+				--Nếu ngày giờ xuất phát nhỏ hơn ngày giờ đến
+				if (@ngayGioXuatPhatNhoHonNgayGioDen = 1)
+				begin
+					--Kiểm tra xe đã được sử dụng trong khoảng thời gian đó hay chưa
+					exec @xeChuaDuocSuDung = xeChuaDuocSuDung @NgayGioXuatPhat, @NgayGioDen, @MaXe, @MaChuyenDi
+
+					--Nếu xe chưa được sử dụng
+					if (@xeChuaDuocSuDung = 1)
+					begin
+						if (@GiaMoiQuangDuong >= 0)
+						begin
+							--Tính giá dự kiến cho chuyến đi
+							exec @GiaDuKien = tinhGiaDuKien @MaTuyenDuong, @MaXe, @GiaMoiQuangDuong
+											
+							--Cập nhật bảng chuyến đi
+							update PHUONGTRANG.DBO.CHUYENDI
+							set TuyenDuong = @MaTuyenDuong, NgayGioXuatPhat = @NgayGioXuatPhat, NgayGioDen = @NgayGioDen, GiaDuKien = @GiaDuKien, Xe = @MaXe
+							where MaChuyenDi = @MaChuyenDi
+
+							set @error = ''
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+								rollback tran 
+								return
+							end
+
+							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDi
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+								rollback tran 
+								return
+							end
+
+							waitfor delay '00:00:05'
+
+							rollback tran
+							return
 						end
 						else
 						begin
@@ -718,7 +852,8 @@ begin tran
 	if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc xem dữ liệu', 0, 0)
-		rollback
+		rollback tran 
+		return
 	end
 commit tran
 
@@ -732,7 +867,24 @@ begin tran
 	if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc xem dữ liệu', 0, 0)
-		rollback
+		rollback tran 
+		return
+	end
+commit tran
+
+--Procedure xem chuyến đi chưa xuất phát
+-------------------------
+create procedure xemChuyenDiChuaXuatPhatISO
+as
+set transaction isolation level read uncommitted
+begin tran
+	select * from PHUONGTRANG.DBO.CHUYENDI where NgayGioXuatPhat > getdate()
+
+	if (@@ERROR <> 0)
+	begin
+		raiserror('Có lỗi trong lúc xem dữ liệu', 0, 0)
+		rollback tran 
+		return
 	end
 commit tran
 
@@ -746,7 +898,8 @@ begin tran
 	if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc xem dữ liệu', 0, 0)
-		rollback
+		rollback tran 
+		return
 	end
 commit tran
 
@@ -822,7 +975,8 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 
 		select * from PHUONGTRANG.DBO.LOAINHANVIEN where MaLoaiNV = @MaLoaiNVMoi
@@ -830,7 +984,8 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 	end
 commit tran
@@ -877,7 +1032,8 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc cập nhật loại nhân viên', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 		
 		select * from PHUONGTRANG.DBO.LOAINHANVIEN where MaLoaiNV = @MaLoaiNV
@@ -885,7 +1041,8 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc thêm loại nhân viên', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 	end
 	else
@@ -941,7 +1098,8 @@ begin tran
 			if (@@ERROR <> 0)
 			begin
 				raiserror('Có lỗi trong lúc xóa loại nhân viên', 0, 0)
-				rollback
+				rollback tran 
+				return
 			end
 		end
 		else
@@ -968,7 +1126,8 @@ begin tran
 	if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc xem loại nhân viên', 0, 0)
-		rollback
+		rollback tran 
+		return
 	end
 commit tran
 
@@ -1049,6 +1208,21 @@ begin
 	end
 end
 
+create procedure veDaDuyet @MaVe varchar(10)
+as
+begin
+	if exists(select MaVe from PHUONGTRANG.DBO.VE where MaVe = @MaVe and TrangThaiVe = 1)
+	begin
+		--Vé đã duyệt
+		return 1
+	end
+	else
+	begin
+		--Vé chưa duyệt
+		return 0
+	end
+end
+
 --Thanh toán vé của khách hàng
 ------------------------------
 create procedure thanhToanVeKhachHang @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @TenDangNhap varchar(50), @SoTien int, @error nvarchar(100) out
@@ -1059,6 +1233,7 @@ begin tran
 	declare @phuongThucThanhToanCoTonTai int
 	declare @tenDangNhapCoTonTai int
 	declare @giaVeThucVaSoTienGiongNhau int
+	declare @veDaDuyet int
 
 	if (@TenDangNhap is null)
 	begin
@@ -1072,26 +1247,37 @@ begin tran
 
 			if (@phuongThucThanhToanCoTonTai = 1)
 			begin
-				--Kiểm tra giá vé thực và số tiền có giống nhau
-				exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
+				--Kiểm tra xem vé đã duyệt hay chưa
+				exec @veDaDuyet = veDaDuyet @MaVe
 
-				if (@giaVeThucVaSoTienGiongNhau = 1)
+				if (@veDaDuyet = 1)
 				begin
-					update PHUONGTRANG.DBO.VE
-					set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), TrangThaiThanhToan = N'Đã thanh toán'
-					where MaVe = @MaVe
+					--Kiểm tra giá vé thực và số tiền có giống nhau
+					exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
 
-					set @error = ''
-
-					if (@@ERROR <> 0)
+					if (@giaVeThucVaSoTienGiongNhau = 1)
 					begin
-						raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
-						rollback
+						update PHUONGTRANG.DBO.VE
+						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), TrangThaiThanhToan = 1
+						where MaVe = @MaVe
+
+						set @error = ''
+
+						if (@@ERROR <> 0)
+						begin
+							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+							rollback tran 
+							return
+						end
+					end
+					else
+					begin
+						set @error = 'Bạn đóng không đủ tiền'
 					end
 				end
 				else
 				begin
-					set @error = 'Bạn đóng không đủ tiền'
+					set @error = 'Vé chưa được duyệt'
 				end
 			end
 			else
@@ -1121,40 +1307,52 @@ begin tran
 
 				if (@tenDangNhapCoTonTai = 1)
 				begin
-					--Kiểm tra giá vé thực và số tiền có giống nhau
-					exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
+					--Kiểm tra xem vé đã duyệt hay chưa
+					exec @veDaDuyet = veDaDuyet @MaVe
 
-					if (@giaVeThucVaSoTienGiongNhau = 1)
+					if (@veDaDuyet = 1)
 					begin
-						--Cập nhật số tiền trong tài khoản
-						update PHUONGTRANG.DBO.TAIKHOAN
-						set SoTien = SoTien - @SoTien
-						where TenDangNhap = @TenDangNhap
+						--Kiểm tra giá vé thực và số tiền có giống nhau
+						exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
 
-						set @error = ''
-
-						if (@@ERROR <> 0)
+						if (@giaVeThucVaSoTienGiongNhau = 1)
 						begin
-							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
-							rollback
+							--Cập nhật số tiền trong tài khoản
+							update PHUONGTRANG.DBO.TAIKHOAN
+							set SoTien = SoTien - @SoTien
+							where TenDangNhap = @TenDangNhap
+
+							set @error = ''
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+								rollback tran 
+								return
+							end
+
+							--Cập nhật vé đã thanh toán
+							update PHUONGTRANG.DBO.VE
+							set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), TrangThaiThanhToan = 1
+							where MaVe = @MaVe
+
+							set @error = ''
+
+							if (@@ERROR <> 0)
+							begin
+								raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+								rollback tran 
+								return
+							end
 						end
-
-						--Cập nhật vé đã thanh toán
-						update PHUONGTRANG.DBO.VE
-						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), TrangThaiThanhToan = N'Đã thanh toán'
-						where MaVe = @MaVe
-
-						set @error = ''
-
-						if (@@ERROR <> 0)
+						else
 						begin
-							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
-							rollback
+							set @error = 'Bạn đóng không đủ tiền'
 						end
 					end
 					else
 					begin
-						set @error = 'Bạn đóng không đủ tiền'
+						set @error = 'Vé chưa được duyệt'
 					end
 				end
 				else
@@ -1172,7 +1370,7 @@ begin tran
 			set @error = 'Vé này không tồn tại'
 		end
 	end
-commit
+commit tran
 
 ------------------------THANH TOÁN VÉ CỦA NHÂN VIÊN-------------------
 ----------------------------------------------------------------------
@@ -1233,7 +1431,8 @@ begin tran
 					if (@@ERROR <> 0)
 					begin
 						raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
-						rollback
+						rollback tran 
+						return
 					end
 				end
 				else
@@ -1255,7 +1454,7 @@ begin tran
 	begin
 		set @error = 'Vé này không tồn tại'
 	end
-commit
+commit tran
 
 ------------------------THỐNG KÊ DOANH THU----------------------------
 ----------------------------------------------------------------------
@@ -1276,10 +1475,13 @@ begin tran
 		from PHUONGTRANG.DBO.VE
 		where TrangThaiThanhToan = 1 and NgayThanhToan >= @NgayBatDau and NgayThanhToan <= @NgayKetThuc
 
+		waitfor delay '00:00:05'
+
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 	end
 	else
@@ -1292,10 +1494,13 @@ begin tran
 			from PHUONGTRANG.DBO.VE
 			where TrangThaiThanhToan = 1 and NgayThanhToan <= @NgayKetThuc
 
+			waitfor delay '00:00:05'
+
 			if (@@ERROR <> 0)
 			begin
 				raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-				rollback
+				rollback tran 
+				return
 			end
 		end
 		else
@@ -1311,10 +1516,13 @@ begin tran
 				from PHUONGTRANG.DBO.VE
 				where TrangThaiThanhToan = 1 and NgayThanhToan >= @NgayBatDau and NgayThanhToan <= @NgayHomNay
 
+				waitfor delay '00:00:05'
+
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 			end
 			else
@@ -1325,10 +1533,101 @@ begin tran
 				from PHUONGTRANG.DBO.VE
 				where TrangThaiThanhToan = 1
 
+				waitfor delay '00:00:05'
+
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-					rollback
+					rollback tran 
+					return
+				end
+			end
+		end
+	end
+commit tran
+
+--Procedure thống kê doanh thu bán vé trong một khoảng thời gian nào đó có sử dụng isolation
+--------------------------------------------------------------------------------------------
+create procedure thongKeDoanhThuTheoThoiGianISO @NgayBatDau datetime, @NgayKetThuc datetime, @error nvarchar(100) out, @TongDoanhThu int out
+as
+set transaction isolation level Serializable
+begin tran
+	--declare
+	declare @NgayHomNay datetime
+	
+	if (@NgayBatDau is not null and @NgayKetThuc is not null)
+	begin
+		set @TongDoanhThu = 0
+		--Tính tổng doanh thu
+		select @TongDoanhThu = sum(GiaVeThuc)
+		from PHUONGTRANG.DBO.VE
+		where TrangThaiThanhToan = 1 and NgayThanhToan >= @NgayBatDau and NgayThanhToan <= @NgayKetThuc
+
+		waitfor delay '00:00:05'
+
+		if (@@ERROR <> 0)
+		begin
+			raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
+			rollback tran 
+			return
+		end
+	end
+	else
+	begin
+		if (@NgayBatDau is null and @NgayKetThuc is not null)
+		begin
+			set @TongDoanhThu = 0
+			--Tính tổng doanh thu
+			select @TongDoanhThu = sum(GiaVeThuc)
+			from PHUONGTRANG.DBO.VE
+			where TrangThaiThanhToan = 1 and NgayThanhToan <= @NgayKetThuc
+
+			waitfor delay '00:00:05'
+
+			if (@@ERROR <> 0)
+			begin
+				raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
+				rollback tran 
+				return
+			end
+		end
+		else
+		begin
+			if (@NgayBatDau is not null and @NgayKetThuc is null)
+			begin
+				--Lấy ngày hôm nay
+				set @NgayHomNay = getdate()
+
+				set @TongDoanhThu = 0
+				--Tính tổng doanh thu
+				select @TongDoanhThu = sum(GiaVeThuc)
+				from PHUONGTRANG.DBO.VE
+				where TrangThaiThanhToan = 1 and NgayThanhToan >= @NgayBatDau and NgayThanhToan <= @NgayHomNay
+
+				waitfor delay '00:00:05'
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
+					rollback tran 
+					return
+				end
+			end
+			else
+			begin
+				set @TongDoanhThu = 0
+				--Tính tổng doanh thu
+				select @TongDoanhThu = sum(GiaVeThuc)
+				from PHUONGTRANG.DBO.VE
+				where TrangThaiThanhToan = 1
+
+				waitfor delay '00:00:05'
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
+					rollback tran 
+					return
 				end
 			end
 		end
@@ -1360,7 +1659,8 @@ begin tran
 		if (@@ERROR <> 0)
 		begin
 			raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-			rollback
+			rollback tran 
+			return
 		end
 	end
 	else
@@ -1395,7 +1695,8 @@ begin tran
 			if (@@ERROR <> 0)
 			begin
 				raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-				rollback
+				rollback tran 
+				return
 			end
 		end
 		else
@@ -1412,7 +1713,8 @@ begin tran
 				if (@@ERROR <> 0)
 				begin
 					raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-					rollback
+					rollback tran 
+					return
 				end
 			end
 			else
@@ -1432,7 +1734,8 @@ begin tran
 					if (@@ERROR <> 0)
 					begin
 						raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-						rollback
+						rollback tran 
+						return
 					end
 				end
 				else
@@ -1446,7 +1749,8 @@ begin tran
 					if (@@ERROR <> 0)
 					begin
 						raiserror('Có lỗi trong lúc thống kê doanh thu', 0, 0)
-						rollback
+						rollback tran 
+						return
 					end
 				end
 			end
@@ -1474,7 +1778,7 @@ begin tran
 	 if (@@ERROR <> 0)
 	begin
 		raiserror('Có lỗi trong lúc xem tài xế', 0, 0)
-		rollback
+		rollback tran return
 	end
 commit tran
 
@@ -1632,7 +1936,8 @@ begin tran
 						if (@@ERROR <> 0)
 						begin
 							raiserror('Có lỗi trong lúc phân công tài xế lái chuyến đi', 0, 0)
-							rollback
+							rollback tran 
+							return
 						end
 					end
 					else

@@ -1,4 +1,4 @@
-<div class="right_col" role="main">
+﻿<div class="right_col" role="main">
     <div class="row">
         <p style="font-size: 50px; margin-left: 35px;">
             Quản lý các tuyến đường
@@ -12,7 +12,7 @@
     $.get('/QuanTriTuyenDuong/XemTuyenDuong', function(result) {
         console.log(result);
         if (result.error == 'error') {
-            alert('Có lỗi xảy ra: ' + error);
+            alert('Có lỗi xảy ra: ' + result.error);
         } else {
             $("#jsGrid").jsGrid({
                 width: "100%",

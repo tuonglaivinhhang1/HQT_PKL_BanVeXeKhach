@@ -1,4 +1,4 @@
-var User=require('../app/models/nhanvien');
+﻿var User=require('../app/models/nhanvien');
 
 var passport = require('./passport');
 
@@ -101,7 +101,7 @@ module.exports=function(app)
         .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu);
 
     
-    app.use('/QuanTriTuyenDuong', QuanTriTuyenDuong);
+   app.use('/QuanTriTuyenDuong', QuanTriTuyenDuong);
     app.use('/QuanTriChuyenDi', QuanTriChuyenDi);
     app.use('/QuanTriLoaiNhanVien', QuanTriLoaiNhanVien);
     app.use('/PhanCongTaiXeLaiChuyenDi', PhanCongTaiXeLaiChuyenDi);
