@@ -167,7 +167,34 @@ var ThongKe = {
                 });
             }
         }
+    },
+    thongkeLuongNhanVien:function(callback)
+    {
+
+      const pool = new sql.ConnectionPool(config, err => {
+        if(err)
+        {
+          console.log(err);
+          
+        }
+        else
+        {
+          pool.request() 
+            
+                     
+            .output('error', sql.NVarChar(500))
+            .output('tongluong',sql.int)
+            .execute('ThongKeLuong_TinhTong',
+             function(err,result) {                
+
+               callback(err,result);
+
+              
+             })
+        }
+    });
     }
+    
 };
 
 module.exports = ThongKe;

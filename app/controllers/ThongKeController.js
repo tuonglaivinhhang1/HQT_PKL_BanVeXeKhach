@@ -34,6 +34,18 @@ var ThongKeController = {
           }
         }
       });
+    },
+   thongkeLuong:function(req,res) 
+   {
+       ThongKe.thongkeLuongNhanVien(function(err,result) 
+       {
+             res.render('ThongKe/ThongKeLuong',{
+            title:"Thống Kê Lương Nhân Viên",
+            ListNhanVien:result.recordset,
+            TongLuong:result.output.tongluong,
+            
+          });
+       });
     }
 };
 

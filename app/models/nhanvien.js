@@ -149,6 +149,43 @@ var GetNhanVien={
 		   			 })
     		}
 		});
+	},
+	addNhanVien:function(nhanvien,callback) 
+	{
+		const pool = new sql.ConnectionPool(config, err => {
+    		if(err)
+    		{
+    			console.log(err);
+    			
+    		}
+    		else
+    		{
+    			pool.request() 
+	    			
+	    			.input('tenNhanVien', sql.NVarChar(50),nhanvien.name)
+	    			.input('gioitinh', sql.NVarChar(50),nhanvien.gioitinh)
+	    			.input('diachi', sql.NVarChar(50),nhanvien.diachi)
+	    			.input('soCMND', sql.VarChar(9),nhanvien.cmnd)
+	    			.input('ngaysinh', sql.Date,nhanvien.ngaysinh)
+	    			.input('dienthoai', sql.VarChar(20),nhanvien.dienthoai)
+	    			.input('tendangnhap', sql.VarChar(50),nhanvien.tendangnhap)
+	    			.input('matkhau', sql.VarChar(100),nhanvien.matkhau)
+	    			.input('loainhanvien', sql.VarChar(10),nhanvien.loainhanvien)
+	    			.input('luong', sql.Int,nhanvien.luong)
+	    			.input('banglai', sql.NVarChar(50),nhanvien.banglai)
+	    			.input('khaNangLaiDuongDai', sql.Int,nhanvien.khanang)    			
+	    			.output('error', sql.NVarChar(500))
+				    .execute('ThemNhanVien',
+					 function(err,result) {						     
+
+					
+
+				      callback(err,result);
+
+			        
+		   			 })
+    		}
+		});
 	}
 };
 

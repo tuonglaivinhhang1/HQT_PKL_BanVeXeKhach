@@ -46,12 +46,12 @@ module.exports=function(app)
 
 		// call by Ajax
 		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
-		// .get('/addnhanvien',controllers.nhanvien.add)
+		.get('/addnhanvien',controllers.nhanvien.add)
 		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
 	
 		.get('/update/nv=:id',controllers.nhanvien.update)
 		// .post('/delete/success',controllers.nhanvien.delete)
-		// .post('/addnhanvien/success',controllers.nhanvien.addSuccess)
+		.post('/addnhanvien/success',controllers.nhanvien.addSuccess)
 		.post('/update/success',controllers.nhanvien.updateSuccess);
 
 	var login=Router()
@@ -98,14 +98,15 @@ module.exports=function(app)
         .get('/DoanhThu/XemChuyenDiChuaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiChuaXuatPhat)
         .get('/DoanhThu/XemChuyenDiDaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiDaXuatPhat)
         .get('/DoanhThu/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
-        .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu);
+        .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu)
+        .get('/LuongNhanVien',controllers.ThongKe.thongkeLuong);
 
     
-   app.use('/QuanTriTuyenDuong', QuanTriTuyenDuong);
-    app.use('/QuanTriChuyenDi', QuanTriChuyenDi);
-    app.use('/QuanTriLoaiNhanVien', QuanTriLoaiNhanVien);
-    app.use('/PhanCongTaiXeLaiChuyenDi', PhanCongTaiXeLaiChuyenDi);
-    app.use('/ThongKe', ThongKe);
+   app.use('/QuanTriTuyenDuong', isloginedIn,QuanTriTuyenDuong);
+    app.use('/QuanTriChuyenDi', isloginedIn,QuanTriChuyenDi);
+    app.use('/QuanTriLoaiNhanVien',isloginedIn, QuanTriLoaiNhanVien);
+    app.use('/PhanCongTaiXeLaiChuyenDi', isloginedIn,PhanCongTaiXeLaiChuyenDi);
+    app.use('/ThongKe', isloginedIn,ThongKe);
 	
 
 

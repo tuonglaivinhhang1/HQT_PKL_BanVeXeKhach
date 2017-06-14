@@ -47,7 +47,7 @@
 
                     </form>
                   
-                    <button style="float: right;" class="btn btn-primary" type="submit"><a href="#" style="text-decoration: none;color:white">Thêm Nhân Viên</a></button>
+                    <button style="float: right;" class="btn btn-primary" type="submit"><a href="/admin/listnhanvien/addnhanvien" style="text-decoration: none;color:white">Thêm Nhân Viên</a></button>
                  
                  <!-- tim nhan vien by CMND -->
                 
@@ -90,9 +90,14 @@
                           <td>{{this.BangLai}}</td>
                           <td>{{this.KhaNangLaiDuongDai}}</td>
                           <td>
-                            <a href="#" class="btn btn-success">Xem</a>
+                           <!--  <a href="#" class="btn btn-success">Xem</a> -->
                             <a href="/admin/listnhanvien/update/nv={{this.MaNhanVien}}" class="btn btn-warning">Sửa</a>
+
+                             <!--  <a href="#" class="btn btn-success">Xem</a> -->
+                            <a href="/admin/listnhanvien/delete/nv={{this.MaNhanVien}}" class="btn btn-danger">Xóa</a>
+                            
                           </td>
+                          
                         </tr>
                         {{/each}}
                        
@@ -109,7 +114,10 @@
 
               </div>
               </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+       <script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous"></script>
         <script type="text/javascript">
 
                   $(document).ready(function() {
