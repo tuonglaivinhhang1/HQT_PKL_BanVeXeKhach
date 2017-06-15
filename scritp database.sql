@@ -105,7 +105,6 @@ create table CHUYENDI
 	TuyenDuong varchar(10) foreign key references TUYENDUONG(MaTuyenDuong),
 	NgayGioXuatPhat datetime,
 	NgayGioDen datetime,
-	QuangDuong int check(QuangDuong >= 0),
 	GiaDuKien int check(GiaDuKien >= 0),
 	Xe varchar(10) foreign key references XE(MaXe)
 )
@@ -260,6 +259,9 @@ values('PTTT003',N'Thẻ Tín Dụng')
 
 insert into PHUONGTHUCTHANHTOAN
 values('PTTT004',N'Chuyển Khoản Ngân Hàng Trực Tiếp')
+
+insert into PHUONGTHUCTHANHTOAN
+values('PTTT005',N'Tài khoản phương trang')
 
 --================================================================================
 

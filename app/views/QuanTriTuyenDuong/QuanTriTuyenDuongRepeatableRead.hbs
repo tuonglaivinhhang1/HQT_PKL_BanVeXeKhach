@@ -9,7 +9,7 @@
     </div>
 </div>
 <script>
-    $.get('/QuanTriTuyenDuong/XemTuyenDuong', function(result) {
+    $.get('/QuanTriTuyenDuong/XemTuyenDuongRepeatableRead', function(result) {
         console.log(result);
         if (result.error == 'error') {
             alert('Có lỗi xảy ra: ' + result.error);

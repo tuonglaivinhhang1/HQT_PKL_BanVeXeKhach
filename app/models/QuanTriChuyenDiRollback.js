@@ -39,7 +39,7 @@ var QuanTriChuyenDi = {
                 callback(err, null);
             }
             pool.request()
-                .execute('xemChuyenDiChuaXuatPhat', function(error, result) {
+                .execute('xemChuyenDiChuaXuatPhatReadUncommitted', function(error, result) {
                     if (error) {
                         callback(error, null);
                     }
@@ -169,7 +169,7 @@ var QuanTriChuyenDi = {
                 .input('NgayGioDen', sql.VarChar, NgayGioDen)
                 .input('MaXe', sql.VarChar, MaXe)
                 .input('GiaMoiQuangDuong', sql.Int, GiaMoiQuangDuong)
-                .execute('capNhatChuyenDi', function(error, result) {
+                .execute('capNhatChuyenDiRollback', function(error, result) {
                     if (error) {
                         callback(error, null, null);
                     } else {
