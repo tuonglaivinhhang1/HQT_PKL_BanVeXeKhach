@@ -7,6 +7,7 @@ module.exports={
 	QuanTriChuyenDi: require('./QuanTriChuyenDiController'),
 	QuanTriLoaiNhanVien: require('./QuanTriLoaiNhanVienController'),
 	PhanCongTaiXeLaiChuyenDi: require('./PhanCongTaiXeLaiChuyenDiController'),
+	PhanCongPhuTrachXe:require('./PhanCongPhuTrachXeController'),
 	ThongKe: require('./ThongKeController'),
 	taikhoan:require('./TaiKhoanController'),
 	

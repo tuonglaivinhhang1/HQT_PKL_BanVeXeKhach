@@ -186,109 +186,7 @@ var listnhanvienAll={
 			});
 		}
 	},
-	// detail:function(req,res)
-	// {
-	// 	var id=req.params.id;
-	// 	var CurrentProduct;
-
-	// 	listProduct.findAll(function(err,ListProduct)
-	// 	{
-	// 		for(var i=0;i<ListProduct.length;i++)
-	// 		{
-	// 			if(ListProduct[i].id==id)
-	// 			{
-
-	// 				CurrentProduct=ListProduct[i];
-					
-	// 				break;
-	// 			}
-	// 		}
-	// 		var Ngay=CurrentProduct.dateadd.getDate();
-	// 		var Thang=CurrentProduct.dateadd.getMonth()+1;
-	// 		var Nam=CurrentProduct.dateadd.getFullYear();
-	// 		var datestring=Ngay+"/"+Thang+"/"+Nam;
-
-		
-
-	// 		CurrentProduct.dateadd=datestring;
-	// 		res.render('Product/detailitem',{
-	// 		title:"Chi Tiết Sản Phẩm",
-	// 		CurrentProduct:CurrentProduct
-
-
-
-	// 		});
-	// 	});
-		
-			
-	// },
-	// delete:function(req,res)
-	// {
-	// 	//get id từ client
-	// 	var id=req.body.masanpham;
-
-	// 	var urlimageItemdeleted;
-	// 	var itemdeleted;
-	// 	listProduct.findAll(function(err,ListProduct)
-	// 	{
-	// 		for(var i=0;i<ListProduct.length;i++)
-	// 		{
-	// 			if(ListProduct[i].id==id)
-	// 			{
-
-	// 				itemdeleted=ListProduct[i];
-					
-	// 				break;
-	// 			}
-	// 		}
-
-	// 		urlimageItemdeleted=itemdeleted.urlimage;
-	// 		listProduct.delete(id,function(err)
-	// 	{
-
-	// 		if(err)
-	// 		{
-	// 			res.status(404).send("Có lỗi xảy ra khi xóa. Vui lòng kiểm tra lại và thử lại. ");
-	// 		}
-	// 		else{
-	// 			listProduct.findAll(function(err,ListProduct)
-	// 			{
-	// 				if(urlimageItemdeleted=='/images/imdefault.png')//không xóa hình mặc định
-	// 				{
-	// 					res.render('Product/delete',{
-	// 					title:"Xóa thành công",
-	// 					messageDetail:"Đã xóa sản phẩm thành công",
-	// 						});
-			
-	// 				}
-	// 				else
-	// 				{
-	// 					fs.unlink("public"+urlimageItemdeleted, function(err)
-	// 					{
-	// 						if(err)
-	// 						{
-	// 							res.status(404).send(err);
-	// 						}
-	// 						else{
-	// 							res.render('Product/delete',{
-	// 							title:"Xóa thành công",
-	// 							messageDetail:"Đã xóa sản phẩm thành công",
-	// 								});
-					
-	// 						}
-	// 					});
-					
-	// 				}		
-
-	// 			});
-	// 		}
-	// 	});
-
-	// 	});
-
-		
-		
-	// },
+	
 	update:function(req,res)
 	{
 		//truyền tham số tương ứng với sp tới client
@@ -402,6 +300,82 @@ var listnhanvienAll={
 				});			
 
 		
+	},
+	tangluong:function(req,res)
+	{
+		var id=req.params.id;
+
+		listnhanvien.getoneNVID(id,function(err,nhanvien)
+		{
+			
+			if(nhanvien.recordset[0].LoaiNhanVien=='LNV001')
+			{
+				nhanvien.recordset[0].LoaiNhanVien='Tài xế';
+			}
+			else if(nhanvien.recordset[0].LoaiNhanVien=='LNV002')
+			{
+				nhanvien.recordset[0].LoaiNhanVien='Nhân Viên Quản Lý';
+			}
+			else if(nhanvien.recordset[0].LoaiNhanVien=='LNV003')
+			{
+				nhanvien.recordset[0].LoaiNhanVien='Nhân Viên Đặt Vé';
+			}
+			else if(nhanvien.recordset[0].LoaiNhanVien=='LNV004')
+			{
+				nhanvien.recordset[0].LoaiNhanVien='Nhân Viên Thanh Toán';
+			}
+
+
+			var Ngay=nhanvien.recordset[0].NgaySinhNV.getDate();
+			var Thang=nhanvien.recordset[0].NgaySinhNV.getMonth()+1;
+			var Nam=nhanvien.recordset[0].NgaySinhNV.getFullYear();
+			var datestring=Thang+"/"+Ngay+"/"+Nam;
+
+			
+
+				nhanvien.recordset[0].NgaySinhNV=datestring;
+
+
+			
+				res.render('nhanvien/tangluong',{
+				title:"Tăng lương tài xế",
+				CurrentNhanVien:nhanvien.recordset[0],
+							
+
+			});
+
+		});
+
+	},
+	tangluongsubmit:function(req,res)
+	{
+		var id=req.body.manhanvien;
+
+		listnhanvien.tangluong(
+		{
+			manhanvien:id,
+			luongtangthem:parseInt(req.body.luongtangthem)
+
+		}
+		,function(err,nhanvien)
+		{
+			
+
+			if(err || nhanvien.output.error!=null)
+			{
+					res.status(404).send("Có lỗi xảy ra. Vui lòng thử lại. ");
+			}
+			else
+			{
+				res.render('nhanvien/tangluongsubmit',{
+				title:"Tăng lương tài xế",
+				messageDetail:"Tăng lương thành công.",
+				
+				});
+			}
+				
+		});
+
 	}
 };
 

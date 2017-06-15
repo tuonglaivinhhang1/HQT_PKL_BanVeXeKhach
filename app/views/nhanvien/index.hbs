@@ -64,10 +64,10 @@
                           <th>CMND</th>
                           <th>DateOfBirth</th>
                           <th>Mobile</th>
-                          <th>Username</th>
+                          
                           <th>Category</th>
                           <th>Salary</th>
-                          <th>DriverLicense</th>
+                          <th>License</th>
                           <th>Ability(km)</th>
                           <th>Action</th>
                         </tr>
@@ -84,17 +84,21 @@
                           <td>{{this.SoCMNDNV}}</td>
                           <td>{{this.NgaySinhNV}}</td>
                           <td>{{this.DienthoaiNV}}</td>
-                          <td>{{this.TenDangNhapNV}}</td>
+                          
                           <td>{{this.LoaiNhanVien}}</td>
                           <td>{{this.Luong}}</td>
                           <td>{{this.BangLai}}</td>
                           <td>{{this.KhaNangLaiDuongDai}}</td>
+
+                         
                           <td>
                            <!--  <a href="#" class="btn btn-success">Xem</a> -->
-                            <a href="/admin/listnhanvien/update/nv={{this.MaNhanVien}}" class="btn btn-warning">Sửa</a>
-
+                            <a href="/admin/listnhanvien/update/nv={{this.MaNhanVien}}" class="btn btn-warning">Cập Nhật</a>
+                             {{#ifvalue this}}
+                                
+                             {{/ifvalue}}
                              <!--  <a href="#" class="btn btn-success">Xem</a> -->
-                            <a href="/admin/listnhanvien/delete/nv={{this.MaNhanVien}}" class="btn btn-danger">Xóa</a>
+                           
                             
                           </td>
                           

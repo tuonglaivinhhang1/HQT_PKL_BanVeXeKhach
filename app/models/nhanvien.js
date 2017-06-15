@@ -186,6 +186,33 @@ var GetNhanVien={
 		   			 })
     		}
 		});
+	},
+	tangluong:function(nhanvien,callback)
+	{
+		const pool = new sql.ConnectionPool(config, err => {
+    		if(err)
+    		{
+    			console.log(err);
+    			
+    		}
+    		else
+    		{
+    			pool.request() 
+	    			
+	    			.input('manhanvien', sql.VarChar(10),nhanvien.manhanvien)
+	    			.input('luongtangthem', sql.Int,nhanvien.luongtangthem)
+	    			 			
+	    			.output('error', sql.NVarChar(500))
+				    .execute('TangLuong1',
+					 function(err,result) {						     
+
+		
+				      callback(err,result);
+
+			        
+		   			 })
+    		}
+		});
 	}
 };
 

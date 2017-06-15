@@ -51,4 +51,14 @@ module.exports={
 
 				return "";
 	},
+	ifvalue:function(value)
+	{
+		if(value.LoaiNhanVien.toLowerCase()=='tài xế')
+		{
+			return' <a href="/admin/listnhanvien/tangluong/nv='+value.MaNhanVien+'" class="btn btn-primary">Tăng Lương</a>';
+		}
+		else{
+			return "";
+		}
+	}
 };

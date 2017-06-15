@@ -118,14 +118,14 @@ var listtaikhoanGetAll={
 					if(err)
 					{
 				
-						res.status(404).send("Cập nhật thất bại. Vui lòng thử lại. Lỗi: "+taikhoan.output);
+						res.status(404).send("Cập nhật thất bại. Vui lòng thử lại. Lỗi: ");
 					}
 					else
 					{
 						
-						res.render('nhanvien/updateSuccess',{
+						res.render('taikhoan/updateSuccess',{
 							title:"Cập nhật thành công",
-							messageDetail:"Đã cập nhật thông tin nhân viên thành công",
+							messageDetail:"Đã cập nhật thông tin tài khoản thành công",
 						});
 					}
 				});			

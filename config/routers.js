@@ -50,12 +50,16 @@ module.exports=function(app)
 		.get('/addnhanvien',controllers.nhanvien.add)
 
 		.post('/addnhanvien/submit',controllers.nhanvien.addsubmit)
-		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
+	
 	
 		.get('/update/nv=:id',controllers.nhanvien.update)
-		// .post('/delete/success',controllers.nhanvien.delete)
 		
-		.post('/update/success',controllers.nhanvien.updateSuccess);
+		
+		.post('/update/submit',controllers.nhanvien.updateSuccess)
+
+		.get('/tangluong/nv=:id',controllers.nhanvien.tangluong)
+		
+		.post('/tangluong/submit',controllers.nhanvien.tangluongsubmit);
 
 	var login=Router()
 		.get('/',controllers.login.index);
@@ -92,7 +96,12 @@ module.exports=function(app)
 
     var PhanCongTaiXeLaiChuyenDi = Router()
         .get('/', controllers.PhanCongTaiXeLaiChuyenDi.index)
-        .post('/', controllers.PhanCongTaiXeLaiChuyenDi.phanCongTaiXeLaiChuyenDi);
+        .post('/submit', controllers.PhanCongTaiXeLaiChuyenDi.phanCongTaiXeLaiChuyenDi);
+
+    var PhanCongPhuTrachXe= Router()
+    	.get('/',controllers.PhanCongPhuTrachXe.index)
+    	.post('/submit',controllers.PhanCongPhuTrachXe.phancong);
+
 
     var ThongKe = Router()
         .get('/DoanhThu', controllers.ThongKe.index)
@@ -116,6 +125,8 @@ module.exports=function(app)
     app.use('/QuanTriChuyenDi', isloginedIn,QuanTriChuyenDi);
     app.use('/QuanTriLoaiNhanVien',isloginedIn, QuanTriLoaiNhanVien);
     app.use('/PhanCongTaiXeLaiChuyenDi', isloginedIn,PhanCongTaiXeLaiChuyenDi);
+    app.use('/admin/phancong-taixe/phutrachxe',isloginedIn,PhanCongPhuTrachXe);
+
     app.use('/ThongKe', isloginedIn,ThongKe);
 	app.use('/admin/listtaikhoan',isloginedIn,TaiKhoan);
 
