@@ -1,0 +1,173 @@
+<div class="right_col" id="gridmainadd" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Thêm Ghế Cho Xe</h3>
+              </div>
+
+              
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Thêm Ghế</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <form  class="form-horizontal form-label-left" id="addform" enctype="multipart/form-data" novalidate>
+
+                     
+                      
+                      <div id="message" class="alert alert-danger">{{messageDetail}}</div>
+                     
+                    <div class="item form-group">
+                        
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã Xe<span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+
+
+                         <input list="listmaxe" id='input'  name="listmaxe">
+                            <datalist id="listmaxe">
+                            {{#each ListMaXe}}
+                              <option value="{{this.MaXe}}" data-xyz="{{this.MaXe}}">
+                             
+                              {{/each}}
+                            </datalist>
+
+                         
+                        </div>
+                    
+                      </div>
+                        
+
+
+                    
+                      
+                       <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Vị Trí Ghế <span class="required" style="color:red">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="vt"  class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="vt"  required type="text">
+                        </div>
+                      </div>
+
+                       
+                     
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
+                         
+                          <button id="send" type="submit" class="btn btn-success">Add</button>
+                        </div>
+                      </div>
+                    </form>
+                 </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>
+
+ <script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous"></script>
+        <script type="text/javascript">
+
+                  $(document).ready(function() {
+
+                    var frm = $('#addform');
+                    var bodytag=$('body');
+                    var urlimage='/images/loadgif.gif';
+                     var message=$('#message');
+                     var gridmainadd=$('#gridmainadd');
+                     var maincontent=$('#maincontent');
+                     
+                   
+               
+
+                    frm.submit(function(e){
+
+
+                      var data={};
+                      data.vitri=$('#vt').val();
+                        var val = $('#input').val()
+                        var xyz = $('#listmaxe option').filter(function() {
+                            return this.value == val;
+                        }).data('xyz');
+
+                        data.maxe=xyz;
+                      
+                       e.preventDefault(); // avoid to execute the actual submit of the form.
+    
+                       //hiệu ứng asyn
+ 
+                      $('body').append('<div id="requestOverlay" class="request-overlay"></div>');
+                      $("#requestOverlay").show();/*Show overlay*/
+
+                          $.ajax({
+
+                              type:'POST',
+                              url:'/admin/listghe/addghe/submit',
+                              data:JSON.stringify(data),
+                            
+                              async: true,
+                              contentType: 'application/json; charset=utf-8',
+
+                            
+                           
+                              success:function(result)
+                              {
+                                
+
+                                if(result.error != null )
+                                {
+                                   message.empty();
+                                  message.append(result.error)                                                                             
+
+                                }
+
+                                else{
+                                  
+                                  gridmainadd.empty();
+                                 maincontent.append('<div class="right_col" role="main"><div class=""><div class="page-title"><div class="title_left"><h3>THÔNG BÁO</h3></div></div><div class="clearfix"></div><div class="row"><div class="alert alert-success">'+result.success+'</div></div></div></div>');                          
+                              
+                              }
+                            },
+                              error:function(err)
+                              {
+                              
+
+                                console.log(err);
+                              },
+                              complete:function()
+                              {
+                                 $("#requestOverlay").remove();/*Remove overlay*/
+                              }
+                          });                 
+                        
+                    });
+
+                   
+                  });
+          </script>

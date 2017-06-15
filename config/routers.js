@@ -63,13 +63,29 @@ module.exports=function(app)
 
 	var login=Router()
 		.get('/',controllers.login.index);
+
+	var ListXe=Router()
+		.get('/',controllers.xe.index)
+		.get('/addxe',controllers.xe.add)
+		.post('/addxe/submit',controllers.xe.addsubmit)
+		.get('/update/mx=:id',controllers.xe.update)
+		.post('/update/submit',controllers.xe.updatesubmit);
+
+	var ListGhe=Router()
+		.get('/',controllers.ghe.index)
+		.get('/addghe',controllers.ghe.add)
+		.post('/addghe/submit',controllers.ghe.addsubmit);
+
 	
 
 	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
 	app.use('/profile',isloginedIn,profileRouter);
 	app.use('/admin/listnhanvien',isloginedIn,listNhanVien);
 	app.use('/admin/login',isloginedIn2,login);
-	
+	app.use('/admin/listxe',isloginedIn,ListXe);
+	app.use('/admin/listghe',isloginedIn,ListGhe);
+
+
 
 	var QuanTriTuyenDuong = Router()
         .get('/', controllers.QuanTriTuyenDuong.index)

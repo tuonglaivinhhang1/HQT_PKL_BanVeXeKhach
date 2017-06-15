@@ -10,5 +10,8 @@ module.exports={
 	PhanCongPhuTrachXe:require('./PhanCongPhuTrachXeController'),
 	ThongKe: require('./ThongKeController'),
 	taikhoan:require('./TaiKhoanController'),
+	xe:require('./XeController'),
+	ghe:require('./GheController')
+	
 	
 };
