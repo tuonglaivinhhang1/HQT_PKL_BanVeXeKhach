@@ -79,6 +79,69 @@
                             <ul class="nav side-menu">
                                 <li><a href="/admin/dashboard"><i class="fa fa-home"></i> Dashboard</a>
 
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="profile_pic">
+                <img src="/images/myavatar.jpg" alt="..." class="img-circle profile_img">
+              </div>
+              <div class="profile_info">
+                <span>Welcome,</span>
+                <h2>{{user.TenNhanVien}}</h2>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
+
+            <br />
+
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                  <li><a href="/admin/dashboard"><i class="fa fa-home"></i> Dashboard</a>
+
+                  </li>
+                  <li><a><i class="fa fa-edit"></i> Quản lý nhân viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/admin/listnhanvien">Xem danh sách nhân viên</a></li>
+                      <li><a href="/admin/listnhanvien/addnhanvien">Thêm nhân viên</a></li><!-- admin/listnhanvien/addnhanvien -->
+
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-edit"></i> Quản lý tài khoản khách hàng <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/admin/listtaikhoan">Xem danh sách tài khoản khách hàng</a></li>
+                    
+
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-edit"></i> Quản lý xe <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="#">Xem danh sách xe</a></li>
+                      <li><a href="#">Thêm xe</a></li>
+
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-edit"></i> Quản lý ghế <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="#">Xem danh sách ghế</a></li>
+                      <li><a href="#">Thêm ghế</a></li>
+
+                    </ul>
+                  </li>
+
+                   <li><a href="/admin/phancong-taixe/phutrachxe"><i class="fa fa-edit"></i> Phân công tài xế phụ trách xe </a>
+
+                  </li>
+                    <li><a href="/ThongKe/LuongNhanVien"><i class="fa fa-edit"></i> Thống kê lương nhân viên</a>
+
+                  </li>
+
+                     <li><a href="/QuanTriTuyenDuong"><i class="fa fa-edit"></i> Quản lý tuyến đường </a>
+
                                 </li>
                                 <li><a><i class="fa fa-edit"></i> Quản lý nhân viên <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -262,6 +325,28 @@
             </footer>
             <!-- /footer content -->
         </div>
+
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div id="maincontent">
+          
+        </div>
+        {{{body}}}
+
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+           Hệ thống được thiết kế bởi PKL Team<br>
+           Copyright &copy; 2017-2018
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+
     </div>
 
     <script src="/vendors/morris.js/morris.min.js"></script>

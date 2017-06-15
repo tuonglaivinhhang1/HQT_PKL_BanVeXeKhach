@@ -1,4 +1,4 @@
-<div class="right_col" role="main">
+<div class="right_col" id="gridmainadd" role="main">
           <div class="">
             <div class="page-title">
               <div class="title_left">
@@ -33,11 +33,11 @@
                   </div>
                   <div class="x_content">
 
-                    <form action="/admin/listnhanvien/addnhanvien/success" method="POST" class="form-horizontal form-label-left" enctype="multipart/form-data" novalidate>
+                    <form  class="form-horizontal form-label-left" id="addform" enctype="multipart/form-data" novalidate>
 
                      
                       <span class="section">Thông tin nhân viên</span>
-                      <div class="alert alert-danger">{{messageDetail}}</div>
+                      <div id="message" class="alert alert-danger">{{messageDetail}}</div>
                      
                       <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Tên Nhân Viên <span class="required" style="color:red">*</span>
@@ -52,7 +52,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Giới Tính <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                          <select name="gioitinh"   required class="select2_single form-control" tabindex="-1">
+                          <select name="gioitinh" id="gioitinh"   required class="select2_single form-control" tabindex="-1">
 
                            <option value="m" selected>Nam</option> 
                            <option value="fm"  >Nữ</option>
@@ -68,21 +68,21 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Địa Chỉ <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="diachi"  required type="text">
+                          <input id="diachi" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="diachi"  required type="text">
                         </div>
                       </div>
                        <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">CMND <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="cmnd"  required type="number">
+                          <input id="cmnd" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="cmnd"  required type="number">
                         </div>
                       </div>
                        <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Điện Thoại <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="dienthoai"  required type="number">
+                          <input id="dienthoai" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="dienthoai"  required type="number">
                         </div>
                       </div>
 
@@ -94,7 +94,7 @@
                           <div class="control-group">
                             <div class="controls">
                               <div class="col-md-5 xdisplay_inputx form-group has-feedback">
-                                <input type="text" class="form-control has-feedback-left" id="single_cal1" name="ngaysinh" aria-describedby="inputSuccess2Status">
+                                <input type="text" class="form-control has-feedback-left" id="single_cal1" name="ngaysinh" value={{CurrentNhanVien.NgaySinhNV}} aria-describedby="inputSuccess2Status">
                                 <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                                 <span id="inputSuccess2Status" class="sr-only">(success)</span>
                               </div>
@@ -109,7 +109,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Tên Đăng Nhập <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name"  class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="tdn"  required type="text">
+                          <input id="tdn"  class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="tdn"  required type="text">
                         </div>
                       </div>
 
@@ -117,7 +117,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Mật Khẩu <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name"  class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="mk"  required type="text">
+                          <input id="mk"  class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="mk"  required type="text">
                         </div>
                       </div>
         
@@ -128,7 +128,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Loại Nhân Viên <span class="required" style="color:red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                          <select name="Category"   required class="select2_single form-control" tabindex="-1">
+                          <select name="Category"  id="Category" required class="select2_single form-control" tabindex="-1">
 
                           <option value="tx" >Tài Xế</option>
                           <option value="dv">Nhân Viên Đặt Vé</option>
@@ -146,7 +146,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Bằng Lái 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="banglai"  required type="text">
+                          <input id="banglai" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="banglai"  required type="text">
                         </div>
                       </div>
 
@@ -154,7 +154,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" >Khả Năng Lái Đường Dài 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number"  id="number" name="khanang" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                          <input type="number"  id="khanang" name="khanang" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       
@@ -165,7 +165,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Lương <span class="required" style="color:red" >*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number"  id="number" name="luong" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                          <input type="number"  id="luong" name="luong" required data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                        
@@ -184,3 +184,96 @@
             </div>
           </div>
          </div>
+
+ <script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous"></script>
+        <script type="text/javascript">
+
+                  $(document).ready(function() {
+
+                    var frm = $('#addform');
+                    var bodytag=$('body');
+                    var urlimage='/images/loadgif.gif';
+                     var message=$('#message');
+                     var gridmainadd=$('#gridmainadd');
+                     var maincontent=$('#maincontent');
+                     
+                   
+               
+
+                    frm.submit(function(e){
+
+
+                      var data={};
+                      data.name=$('#name').val();
+                       data.diachi=$('#diachi').val();
+                        data.gioitinh=$('#gioitinh').find(':selected').text();                       
+                       data.dienthoai=$('#dienthoai').val();
+                        data.tdn=$('#tdn').val();
+                       data.mk=$('#mk').val();
+                        data.ngaysinh=$('#single_cal1').val();
+                       data.cmnd=$('#cmnd').val();
+                       data.luong=$('#luong').val();
+                        data.banglai=$('#banglai').val();
+                       data.khanang=$('#khanang').val();
+                       data.Category=$('#Category').find(':selected').text();
+
+
+
+                       e.preventDefault(); // avoid to execute the actual submit of the form.
+    
+                       //hiệu ứng asyn
+
+
+ 
+                      $('body').append('<div id="requestOverlay" class="request-overlay"></div>');
+                      $("#requestOverlay").show();/*Show overlay*/
+
+                          $.ajax({
+
+                              type:'POST',
+                              url:'/admin/listnhanvien/addnhanvien/submit',
+                              data:JSON.stringify(data),
+                              dataType: 'json', 
+                              async: true,
+                              contentType: 'application/json; charset=utf-8',
+
+                            
+                           
+                              success:function(result)
+                              {
+                                
+
+                                if(result.error != null )
+                                {
+                                   message.empty();
+                                  message.append(result.error)                                                                             
+
+                                }
+
+                                else{
+                                  
+                                  gridmainadd.empty();
+                                maincontent.append('<div class="right_col" role="main"><div class=""><div class="page-title"><div class="title_left"><h3>THÔNG BÁO</h3></div></div><div class="clearfix"></div><div class="row"><div class="alert alert-success">'+result.success+'</div></div></div></div>');                          
+                              
+                              }
+                            },
+                              error:function(err)
+                              {
+                              
+
+                                console.log(err);
+                              },
+                              complete:function()
+                              {
+                                 $("#requestOverlay").remove();/*Remove overlay*/
+                              }
+                          });                 
+                        
+                    });
+
+                   
+                  });
+          </script>

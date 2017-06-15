@@ -5,64 +5,75 @@ var passport = require('./passport');
 
 var bcrypt = require('bcryptjs');
 
-var Router = require('express').Router;
 
-var controllers = require('../app/controllers');
+var Router=require('express').Router;
 
-module.exports = function(app) {
-    function isloginedIn(req, res, next) //nếu đã đăng nhập thì thực hiện các công việc đã đăng nhập.
-    {
-        if (req.isAuthenticated()) {
-            return next();
-        } else {
-            res.redirect('/admin/login');
-        }
+var controllers=require('../app/controllers');
 
+module.exports=function(app)
+{
+	function isloginedIn(req,res,next)//nếu đã đăng nhập thì thực hiện các công việc đã đăng nhập.
+	{
+		if(req.isAuthenticated())
+		{
+			return next();
+		}
+		else{
+			res.redirect('/admin/login');
+		}
 
-    }
+		
+	}
+	function isloginedIn2(req,res,next)//nếu đã đăng nhập thì không được request login hay đăng ký nữa
+	{
+		if(req.isAuthenticated())
+		{
+			res.redirect('/admin/dashboard');
+		}
+		else{
+			return next();
+		}
+		
+	}
 
-    function isloginedIn2(req, res, next) //nếu đã đăng nhập thì không được request login hay đăng ký nữa
-    {
-        if (req.isAuthenticated()) {
-            res.redirect('/admin/dashboard');
-        } else {
-            return next();
-        }
+	var dashboardRouter=Router()
+		.get('/',controllers.dashboard.index)
+		.post('/',controllers.dashboard.index);
+	
+	var profileRouter=Router()
+		.get('/',controllers.profile.index);
 
-    }
+	var listNhanVien=Router()
+		.get('/',controllers.nhanvien.index)
 
-    var dashboardRouter = Router()
-        .get('/', controllers.dashboard.index)
-        .post('/', controllers.dashboard.index);
+		// call by Ajax
 
-    var profileRouter = Router()
-        .get('/', controllers.profile.index);
+		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
+		.get('/addnhanvien',controllers.nhanvien.add)
 
-    var listNhanVien = Router()
-        .get('/', controllers.nhanvien.index)
+		.post('/addnhanvien/submit',controllers.nhanvien.addsubmit)
+	
+	
+		.get('/update/nv=:id',controllers.nhanvien.update)
+		
+		
+		.post('/update/submit',controllers.nhanvien.updateSuccess)
 
-        // call by Ajax
-        .get('/finnvbycmnd', controllers.nhanvien.findNVbyCMND)
-        .get('/addnhanvien', controllers.nhanvien.add)
-        // .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
+		.get('/tangluong/nv=:id',controllers.nhanvien.tangluong)
+		
+		.post('/tangluong/submit',controllers.nhanvien.tangluongsubmit);
 
-        .get('/update/nv=:id', controllers.nhanvien.update)
-        // .post('/delete/success',controllers.nhanvien.delete)
-        .post('/addnhanvien/success', controllers.nhanvien.addSuccess)
-        .post('/update/success', controllers.nhanvien.updateSuccess);
+	var login=Router()
+		.get('/',controllers.login.index);
+	
 
-    var login = Router()
-        .get('/', controllers.login.index);
+	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
+	app.use('/profile',isloginedIn,profileRouter);
+	app.use('/admin/listnhanvien',isloginedIn,listNhanVien);
+	app.use('/admin/login',isloginedIn2,login);
+	
 
-
-
-    app.use('/admin/dashboard', isloginedIn, dashboardRouter);
-    app.use('/profile', isloginedIn, profileRouter);
-    app.use('/admin/listnhanvien', isloginedIn, listNhanVien);
-    app.use('/admin/login', isloginedIn2, login);
-
-
-    var QuanTriTuyenDuong = Router()
+	var QuanTriTuyenDuong = Router()
         .get('/', controllers.QuanTriTuyenDuong.index)
         .get('/RepeatableRead', controllers.QuanTriTuyenDuongRepeatableRead.index)
         .get('/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
@@ -93,7 +104,12 @@ module.exports = function(app) {
 
     var PhanCongTaiXeLaiChuyenDi = Router()
         .get('/', controllers.PhanCongTaiXeLaiChuyenDi.index)
-        .post('/', controllers.PhanCongTaiXeLaiChuyenDi.phanCongTaiXeLaiChuyenDi);
+        .post('/submit', controllers.PhanCongTaiXeLaiChuyenDi.phanCongTaiXeLaiChuyenDi);
+
+    var PhanCongPhuTrachXe= Router()
+    	.get('/',controllers.PhanCongPhuTrachXe.index)
+    	.post('/submit',controllers.PhanCongPhuTrachXe.phancong);
+
 
     var ThongKe = Router()
         .get('/DoanhThu', controllers.ThongKe.index)
@@ -103,8 +119,29 @@ module.exports = function(app) {
         .get('/DoanhThu/XemChuyenDiDaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiDaXuatPhat)
         .get('/DoanhThu/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
         .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu)
+
         .post('/DoanhThuSerializable', controllers.ThongKeSerializable.thongKeDoanhThu)
         .get('/LuongNhanVien', controllers.ThongKe.thongkeLuong);
+
+     
+
+    var TaiKhoan=Router()
+    	.get('/',controllers.taikhoan.index)
+    	.get('/findtk',controllers.taikhoan.findTKbyLTK)
+    	.get('/update/mtk=:id',controllers.taikhoan.update)
+    	.post('/update/submit',controllers.taikhoan.updatesubmit);
+
+
+
+    
+
+    app.use('/admin/phancong-taixe/phutrachxe',isloginedIn,PhanCongPhuTrachXe);
+
+
+	app.use('/admin/listtaikhoan',isloginedIn,TaiKhoan);
+
+
+
 
     var ThanhToanVeNhanVien = Router()
         .get('/', controllers.ThanhToanVeNhanVien.index)

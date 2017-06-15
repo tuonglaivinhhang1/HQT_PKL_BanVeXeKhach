@@ -166,10 +166,10 @@ values('XE002',N'Giường Nằm','59B-09332',40)
 --================================================================================
 
 insert into TUYENDUONG
-values('TD001',N'TP Hồ Chí Minh',N'Phú Yên',N'Bến Xe Miền Đông',N'Bến Xe Phú Lâm')
+values('TD001',N'TP Hồ Chí Minh',N'Phú Yên',N'Bến Xe Miền Đông',N'Bến Xe Phú Lâm',500)
 
 insert into TUYENDUONG
-values('TD002',N'TP Hồ Chí Minh',N'Phú Yên',N'Cầu Vượt Sóng Thần',N'Tạp Hóa Lệ Quang-Hòa Phong')
+values('TD002',N'TP Hồ Chí Minh',N'Phú Yên',N'Cầu Vượt Sóng Thần',N'Tạp Hóa Lệ Quang-Hòa Phong',520)
 --================================================================================
 
 insert into LoaiNhanVien

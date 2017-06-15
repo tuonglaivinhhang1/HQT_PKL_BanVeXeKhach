@@ -1,3 +1,4 @@
+
 module.exports = {
     dashboard: require('./dashboardController'),
     profile: require('./profileController'),
@@ -12,4 +13,5 @@ module.exports = {
     ThongKe: require('./ThongKeController'),
     ThongKeSerializable: require('./ThongKeSerializableController'),
     ThanhToanVeNhanVien: require('./ThanhToanVeNhanVienController'),
+
 };

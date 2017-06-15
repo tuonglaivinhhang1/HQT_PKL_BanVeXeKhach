@@ -8,7 +8,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2><i>DANH SÁCH NHÂN VIÊN PHƯƠNG TRANG</i></h2>
+                    <h2><i>DANH SÁCH TÀI KHOẢN KHÁCH HÀNG</i></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -32,22 +32,22 @@
                      
                     </p>
 
-                    <form id="searchnhanvien">
+                    <form id="searchtkkh">
                      
                       
                     
                             
                               <div class="input-group">
-                                <input type="number" id="tbcmnd" placeholder="Nhập Số CMND nhân viên..." class="form-control">
+                                <input type="text" id="tbltk" placeholder="Nhập Loại Tài Khoản..." class="form-control">
                                 <span class="input-group-btn">
-                                  <input type="submit" id="searchnvcmnd" class="btn btn-primary" value="Search">
+                                  <input type="submit" id="searchltk" class="btn btn-primary" value="Search">
                                   </span>
                               </div>
                       
 
                     </form>
                   
-                    <button style="float: right;" class="btn btn-primary" type="submit"><a href="/admin/listnhanvien/addnhanvien" style="text-decoration: none;color:white">Thêm Nhân Viên</a></button>
+                  
                  
                  <!-- tim nhan vien by CMND -->
                 
@@ -57,48 +57,32 @@
                     <table id="datatable" class="table table-striped table-bordered">
                       <thead>
                         <tr>
-                          <th>ID</th>
-                          <th>Name</th>
-                          <th>Sex</th>
-                          <th>Adress</th>
-                          <th>CMND</th>
-                          <th>DateOfBirth</th>
-                          <th>Mobile</th>
-                          
-                          <th>Category</th>
-                          <th>Salary</th>
-                          <th>License</th>
-                          <th>Ability(km)</th>
-                          <th>Action</th>
+                          <th>Mã TK</th>
+                          <th>Điểm</th>
+                          <th>Loại TK</th>
+                          <th>Số Tiền</th>                       
+                          <th>Tên Đăng Nhập</th>                      
+                          <th>Mã Khách Hàng</th>
+                           <th>Action</th>
                         </tr>
                       </thead>
 
 
                       <tbody>
-                        {{#each ListNhanVien}}
+                        {{#each ListTaiKhoan}}
                         <tr>
-                          <td>{{this.MaNhanVien}}</td>
-                          <td>{{this.TenNhanVien}}</td>
-                          <td>{{this.GioiTinhNV}}</td>
-                          <td>{{this.DiaChiNV}}</td>
-                          <td>{{this.SoCMNDNV}}</td>
-                          <td>{{this.NgaySinhNV}}</td>
-                          <td>{{this.DienthoaiNV}}</td>
+                          <td>{{this.MaTaiKhoan}}</td>
+                          <td>{{this.DiemTichLuy}}</td>
+                          <td>{{this.LoaiTaiKhoan}}</td>
+                          <td>{{this.SoTien}}</td>
+                          <td>{{this.TenDangNhap}}</td>
                           
-                          <td>{{this.LoaiNhanVien}}</td>
-                          <td>{{this.Luong}}</td>
-                          <td>{{this.BangLai}}</td>
-                          <td>{{this.KhaNangLaiDuongDai}}</td>
-
-                         
+                          <td>{{this.MaKhachHang}}</td>
                           <td>
                            <!--  <a href="#" class="btn btn-success">Xem</a> -->
-                            <a href="/admin/listnhanvien/update/nv={{this.MaNhanVien}}" class="btn btn-warning">Cập Nhật</a>
-                             {{#ifvalue this}}
-                                
-                             {{/ifvalue}}
-                             <!--  <a href="#" class="btn btn-success">Xem</a> -->
-                           
+                            <a href="/admin/listtaikhoan/update/mtk={{this.MaTaiKhoan}}" class="btn btn-warning">Cập Nhật</a>
+
+                          
                             
                           </td>
                           
@@ -126,12 +110,12 @@
 
                   $(document).ready(function() {
 
-                    var frm = $('#searchnhanvien');
+                    var frm = $('#searchtkkh');
                     var bodytag=$('body');
                     var urlimage='/images/loadgif.gif';
 
 
-                    // var data = frm.serialize();
+               
 
                     frm.submit(function(e){
 
@@ -146,11 +130,11 @@
                           $.ajax({
 
                               type:'GET',
-                              url:'/admin/listnhanvien/finnvbycmnd?tbcmnd='+$('#tbcmnd').val(),
+                              url:'/admin/listtaikhoan/findtk?ltk='+$('#tbltk').val(),
                               
                               dataType: 'json', 
                               async: true,
-                               contentType: 'application/json; charset=utf-8',
+                              contentType: 'application/json; charset=utf-8',
 
                             
                            
@@ -161,44 +145,37 @@
                                var notify=$('.notify');
 
 
-                                if(result == null)
+                                if(result.recordset.length == 0)
                                 {
                                  notify.empty();
-                                notify.append('Không tìm thấy nhân viên nào');
+                                notify.append('Không tìm thấy tài khoản nào');
 
-                                  tbodyobj.empty();
-                               
-
-                                  
-
+                                  tbodyobj.empty();                                                        
 
                                 }
+
                                 else{
                                   notify.empty();
 
                                   tbodyobj.empty();
-                                  tbodyobj.append('\
+                                  
+                              for(var i=0;i<result.recordset.length;i++)
+                              {
+                                 tbodyobj.append('\
                                     <tr>\
-                          <td>'+result.MaNhanVien+'</td>\
-                          <td>'+result.TenNhanVien+'</td>\
-                          <td>'+result.GioiTinhNV+'</td>\
-                          <td>'+result.DiaChiNV+'</td>\
-                          <td>'+result.SoCMNDNV+'</td>\
-                          <td>'+result.NgaySinhNV+'</td>\
-                          <td>'+result.DienthoaiNV+'</td>\
-                          <td>'+result.TenDangNhapNV+'</td>\
-                          <td>'+result.LoaiNhanVien+'</td>\
-                          <td>'+result.Luong+'</td>\
-                          <td>'+result.BangLai+'</td>\
-                          <td>'+result.KhaNangLaiDuongDai+'</td>\
+                          <td>'+result.recordset[i].MaTaiKhoan+'</td>\
+                          <td>'+result.recordset[i].DiemTichLuy+'</td>\
+                          <td>'+result.recordset[i].LoaiTaiKhoan+'</td>\
+                          <td>'+result.recordset[i].SoTien+'</td>\
+                          <td>'+result.recordset[i].TenDangNhap+'</td>\
+                          <td>'+result.recordset[i].MaKhachHang+'</td>\
                           <td>\
-                            <a href="#" class="btn btn-success">Xem</a>\
-                            <a href="/admin/listnhanvien/update/nv='+result.MaNhanVien+'" class="btn btn-warning">Sửa</a>\
+                            <a href="#" class="btn btn-danger">Xóa</a>\
+                            <a href="/admin/listtaikhoan/update/mtk='+result.recordset[i].MaTaiKhoan+'" class="btn btn-warning">Sửa</a>\
                           </td>\
                         </tr>\
                                     ');
-
-                                  // /c/console.log(result[0].DiaChiNV);
+                                }
 
                                 }
                               
