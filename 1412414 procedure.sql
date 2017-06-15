@@ -124,7 +124,7 @@ begin tran
 	begin
 		set @error = 'Nơi đến và nơi xuất phát phải khác nhau'
 	end
-commit tran tran
+commit tran
 
 ------------------------XÓA TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
@@ -267,6 +267,128 @@ begin tran
 	end
 commit tran
 
+--Procedure cập nhật tuyến đường
+--------------------------------
+create procedure capNhatTuyenDuongRepeatableRead @MaTuyenDuong varchar(10), @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50), @BenDi nvarchar(50), @BenDen nvarchar(50), @QuangDuong int, @error nvarchar(100) out
+as
+set transaction isolation level repeatable read
+begin tran
+	--declare
+	declare @tuyenDuongCoTonTai int
+	declare @noiXuatPhatNoiDenKhacNhau int
+
+	--Kiểm tra mã tuyến đường này có tồn tại hay không
+	exec @tuyenDuongCoTonTai = tuyenDuongCoTonTai @MaTuyenDuong
+
+	if (@tuyenDuongCoTonTai = 1)
+	begin
+		--Kiểm tra nơi đến và nơi xuất phát có khác nhau không
+		exec @noiXuatPhatNoiDenKhacNhau = noiXuatPhatNoiDenKhacNhau @NoiXuatPhat, @NoiDen
+
+		if (@noiXuatPhatNoiDenKhacNhau = 1)
+		begin
+			if (@QuangDuong >= 0)
+			begin
+				set @error = ''
+
+				--Cập nhật tuyến đường
+				update PHUONGTRANG.DBO.TUYENDUONG
+				set NoiXuatPhat = @NoiXuatPhat, NoiDen = @NoiDen, QuangDuong = @QuangDuong, BenDi = @BenDi, BenDen = @BenDen
+				where MaTuyenDuong = @MaTuyenDuong
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+					rollback tran 
+					return
+				end
+
+				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaTuyenDuong
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+					rollback tran 
+					return
+				end
+			end
+			else
+			begin
+				set @error = 'Quảng đường phải lớn hơn hoặc bằng 0'
+			end
+		end
+		else
+		begin
+			set @error = 'Nơi xuất phát và nơi đến giống nhau'
+		end
+	end
+	else
+	begin
+		set @error = 'Tuyến đường không tồn tại'
+	end
+commit tran
+
+--Procedure cập nhật tuyến đường
+--------------------------------
+create procedure capNhatTuyenDuongReadUncommitted @MaTuyenDuong varchar(10), @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50), @BenDi nvarchar(50), @BenDen nvarchar(50), @QuangDuong int, @error nvarchar(100) out
+as
+set transaction isolation level read uncommitted
+begin tran
+	--declare
+	declare @tuyenDuongCoTonTai int
+	declare @noiXuatPhatNoiDenKhacNhau int
+
+	--Kiểm tra mã tuyến đường này có tồn tại hay không
+	exec @tuyenDuongCoTonTai = tuyenDuongCoTonTai @MaTuyenDuong
+
+	if (@tuyenDuongCoTonTai = 1)
+	begin
+		--Kiểm tra nơi đến và nơi xuất phát có khác nhau không
+		exec @noiXuatPhatNoiDenKhacNhau = noiXuatPhatNoiDenKhacNhau @NoiXuatPhat, @NoiDen
+
+		if (@noiXuatPhatNoiDenKhacNhau = 1)
+		begin
+			if (@QuangDuong >= 0)
+			begin
+				set @error = ''
+
+				--Cập nhật tuyến đường
+				update PHUONGTRANG.DBO.TUYENDUONG
+				set NoiXuatPhat = @NoiXuatPhat, NoiDen = @NoiDen, QuangDuong = @QuangDuong, BenDi = @BenDi, BenDen = @BenDen
+				where MaTuyenDuong = @MaTuyenDuong
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+					rollback tran 
+					return
+				end
+
+				select * from PHUONGTRANG.DBO.TUYENDUONG where MaTuyenDuong = @MaTuyenDuong
+
+				if (@@ERROR <> 0)
+				begin
+					raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
+					rollback tran 
+					return
+				end
+			end
+			else
+			begin
+				set @error = 'Quảng đường phải lớn hơn hoặc bằng 0'
+			end
+		end
+		else
+		begin
+			set @error = 'Nơi xuất phát và nơi đến giống nhau'
+		end
+	end
+	else
+	begin
+		set @error = 'Tuyến đường không tồn tại'
+	end
+commit tran
+
 ------------------------XEM TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
 create procedure xemTuyenDuong
@@ -286,7 +408,7 @@ commit tran
 
 ------------------------XEM TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
-create procedure xemTuyenDuongISO
+create procedure xemTuyenDuongRepeatableRead
 as
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
 begin tran
@@ -737,109 +859,6 @@ begin tran
 	end
 commit tran
 
---Procedure cập nhật chuyến đi rollback tran
----------------------------------------
-create procedure capNhatChuyenDiRollback @MaChuyenDi varchar(10), @MaTuyenDuong varchar(10), @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @GiaMoiQuangDuong int, @error nvarchar(100) out
-as
-begin tran
-	--declare
-	declare @chuyenDiCoTonTai int
-	declare @ngayGioXuatPhatNhoHonNgayGioDen int
-	declare @xeChuaDuocSuDung int
-	declare @GiaDuKien int
-	declare @xeCoTonTai int
-	declare @tuyenDuongCoTonTai int
-
-	--Kiểm tra chuyến đi có tồn tại
-	exec @chuyenDiCoTonTai = chuyenDiCoTonTai @MaChuyenDi
-
-	if (@chuyenDiCoTonTai = 1)
-	begin
-		--Kiểm tra mã xe này có tồn tại hay không
-		exec @xeCoTonTai = xeCoTonTai @MaXe
-
-		if (@xeCoTonTai = 1)
-		begin
-			exec @tuyenDuongCoTonTai = tuyenDuongCoTonTai @MaTuyenDuong
-
-			if (@tuyenDuongCoTonTai = 1)
-			begin
-				--Kiêm tra ngày giờ xuất phát có nhỏ hơn ngày giờ đến
-				exec @ngayGioXuatPhatNhoHonNgayGioDen = ngayGioXuatPhatNhoHonNgayGioDen @NgayGioXuatPhat, @NgayGioDen
-
-				--Nếu ngày giờ xuất phát nhỏ hơn ngày giờ đến
-				if (@ngayGioXuatPhatNhoHonNgayGioDen = 1)
-				begin
-					--Kiểm tra xe đã được sử dụng trong khoảng thời gian đó hay chưa
-					exec @xeChuaDuocSuDung = xeChuaDuocSuDung @NgayGioXuatPhat, @NgayGioDen, @MaXe, @MaChuyenDi
-
-					--Nếu xe chưa được sử dụng
-					if (@xeChuaDuocSuDung = 1)
-					begin
-						if (@GiaMoiQuangDuong >= 0)
-						begin
-							--Tính giá dự kiến cho chuyến đi
-							exec @GiaDuKien = tinhGiaDuKien @MaTuyenDuong, @MaXe, @GiaMoiQuangDuong
-											
-							--Cập nhật bảng chuyến đi
-							update PHUONGTRANG.DBO.CHUYENDI
-							set TuyenDuong = @MaTuyenDuong, NgayGioXuatPhat = @NgayGioXuatPhat, NgayGioDen = @NgayGioDen, GiaDuKien = @GiaDuKien, Xe = @MaXe
-							where MaChuyenDi = @MaChuyenDi
-
-							set @error = ''
-
-							if (@@ERROR <> 0)
-							begin
-								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-								rollback tran 
-								return
-							end
-
-							select * from PHUONGTRANG.DBO.CHUYENDI where MaChuyenDi = @MaChuyenDi
-
-							if (@@ERROR <> 0)
-							begin
-								raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
-								rollback tran 
-								return
-							end
-
-							waitfor delay '00:00:05'
-
-							rollback tran
-							return
-						end
-						else
-						begin
-							set @error = 'Giá mỗi quảng đường phải lớn hơn hoặc bằng 0'
-						end
-					end
-					else
-					begin
-						set @error = 'Xe đã được sử dụng'
-					end
-				end
-				else
-				begin
-					set @error = 'Ngày giờ xuất phát lớn hơn hoặc bằng ngày giờ đến'
-				end
-			end
-			else
-			begin
-				set @error = 'Không tồn tại tuyến đường này'
-			end
-		end
-		else
-		begin
-			set @error = 'Không tồn tại xe này'
-		end
-	end
-	else
-	begin
-		set @error = 'Không tồn tại chuyến đi này'
-	end
-commit tran
-
 ------------------------XEM CHUYẾN ĐI---------------------------------
 ----------------------------------------------------------------------
 
@@ -875,7 +894,22 @@ commit tran
 
 --Procedure xem chuyến đi chưa xuất phát
 -------------------------
-create procedure xemChuyenDiChuaXuatPhatISO
+create procedure xemChuyenDiChuaXuatPhatReadCommitted
+as
+begin tran
+	select * from PHUONGTRANG.DBO.CHUYENDI where NgayGioXuatPhat > getdate()
+
+	if (@@ERROR <> 0)
+	begin
+		raiserror('Có lỗi trong lúc xem dữ liệu', 0, 0)
+		rollback tran 
+		return
+	end
+commit tran
+
+--Procedure xem chuyến đi chưa xuất phát
+-------------------------
+create procedure xemChuyenDiChuaXuatPhatReadUncommitted
 as
 set transaction isolation level read uncommitted
 begin tran
@@ -1174,6 +1208,7 @@ begin
 end
 
 --Kiểm tra tên đăng nhập có tồn tại
+-----------------------------------
 create procedure tenDangNhapCoTonTai @TenDangNhap varchar(50)
 as
 begin
@@ -1190,6 +1225,7 @@ begin
 end
 
 --Kiểm tra giá vé thực và số tiền có giống nhau
+-----------------------------------------------
 create procedure giaVeThucVaSoTienGiongNhau @MaVe varchar(10), @SoTien int
 as
 begin
@@ -1209,6 +1245,8 @@ begin
 	end
 end
 
+--Kiểm tra xem vé đã duyệt
+--------------------------
 create procedure veDaDuyet @MaVe varchar(10)
 as
 begin
@@ -1376,6 +1414,32 @@ commit tran
 ------------------------THANH TOÁN VÉ CỦA NHÂN VIÊN-------------------
 ----------------------------------------------------------------------
 
+--Xem vé
+Create proc xemve @MaVe varchar(10), @error varchar(50) out
+as
+begin tran
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITtED
+	declare @kiemtrave int
+	exec  @kiemtrave =  veCoTonTai @MaVe
+	if(@kiemtrave =1 )
+		begin
+		 select * from  VE where MaVe = @MaVe
+		end
+	  if (@@ERROR <> 0)
+		begin
+			set @error = 'Phat sinh loi trong luc doc ve'
+			raiserror('Phat sinh loi trong luc doc ve', 0, 0)
+			rollback tran
+			return
+		end
+   else
+	   begin
+		 raiserror('khong co ve ',0,0)
+		 rollback tran
+		 return 
+	   end
+commit tran
+
 --Kiểm tra nhân viên thanh toán có tồn tại
 ------------------------------------------
 create procedure nhanVienThanhToanCoTonTai @MaNV varchar(10)
@@ -1424,7 +1488,7 @@ begin tran
 				if (@giaVeThucVaSoTienGiongNhau = 1)
 				begin
 					update PHUONGTRANG.DBO.VE
-					set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = N'Đã thanh toán'
+					set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
 					where MaVe = @MaVe
 
 					set @error = ''
@@ -1549,7 +1613,7 @@ commit tran
 
 --Procedure thống kê doanh thu bán vé trong một khoảng thời gian nào đó có sử dụng isolation
 --------------------------------------------------------------------------------------------
-create procedure thongKeDoanhThuTheoThoiGianISO @NgayBatDau datetime, @NgayKetThuc datetime, @error nvarchar(100) out, @TongDoanhThu int out
+create procedure thongKeDoanhThuTheoThoiGianSerializable @NgayBatDau datetime, @NgayKetThuc datetime, @error nvarchar(100) out, @TongDoanhThu int out
 as
 set transaction isolation level Serializable
 begin tran

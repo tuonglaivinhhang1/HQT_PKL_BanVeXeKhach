@@ -1,0 +1,57 @@
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" action="/ThanhToanVeNhanVien">
+                <div class="form-group">
+                    <label for="MaVe">Mã vé</label>
+                    <input name="MaVe" class="form-control" type="text" id="MaVe">
+                </div>
+                <a id="ButtonTim" class="btn btn-default">Tìm</a>
+                <div class="form-group">
+                    <label for="GiaVeThuc">Giá vé thực</label>
+                    <input name="GiaVeThuc" class="form-control" type="text" id="GiaVeThuc">
+                </div>
+                <button type="submit" class="btn btn-default">Thanh Toán</button>
+                <div class="form-group">
+                    {{#if error}}
+                        <div class="panel panel-danger">
+                            <div class="panel-body"> Có lỗi trong quá trình thanh toán</div>
+                        </div>
+                    {{else}}
+                        {{#if errorMessage}}
+                            <div class="panel panel-warning">
+                                <div class="panel-body"> {{errorMessage}}</div>
+                            </div>
+                        {{else}}
+                            {{#if success}}
+                                <div class="panel panel-success">
+                                    <div class="panel-body"> Thanh toán thành công!!!!</div>
+                                </div>
+                            {{/if}}
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+  $("#ButtonTim").click(function () {
+    console.log('click ButtonTim');
+    var MaVe = $("#MaVe").val();
+    $.post('/ThanhToanVeNhanVien/MaVe', {MaVe: MaVe}, function(result) {
+      console.log(result);
+        if (result.error) {
+            alert('Có lỗi xảy ra');
+        } else {
+          if (result.errorMessage) {
+            alert(result.errorMessage);
+          }
+          else {
+            console.log(result.data);
+            $("#GiaVeThuc").val(result.data);
+          }
+        }
+    });
+  });
+</script>

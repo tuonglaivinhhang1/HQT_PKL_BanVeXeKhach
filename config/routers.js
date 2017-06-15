@@ -1,84 +1,87 @@
-﻿var User=require('../app/models/nhanvien');
+﻿
+var User = require('../app/models/nhanvien');
 
 var passport = require('./passport');
 
 var bcrypt = require('bcryptjs');
 
-var Router=require('express').Router;
+var Router = require('express').Router;
 
-var controllers=require('../app/controllers');
+var controllers = require('../app/controllers');
 
-module.exports=function(app)
-{
-	function isloginedIn(req,res,next)//nếu đã đăng nhập thì thực hiện các công việc đã đăng nhập.
-	{
-		if(req.isAuthenticated())
-		{
-			return next();
-		}
-		else{
-			res.redirect('/admin/login');
-		}
-
-		
-	}
-	function isloginedIn2(req,res,next)//nếu đã đăng nhập thì không được request login hay đăng ký nữa
-	{
-		if(req.isAuthenticated())
-		{
-			res.redirect('/admin/dashboard');
-		}
-		else{
-			return next();
-		}
-		
-	}
-
-	var dashboardRouter=Router()
-		.get('/',controllers.dashboard.index)
-		.post('/',controllers.dashboard.index);
-	
-	var profileRouter=Router()
-		.get('/',controllers.profile.index);
-
-	var listNhanVien=Router()
-		.get('/',controllers.nhanvien.index)
-
-		// call by Ajax
-		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
-		.get('/addnhanvien',controllers.nhanvien.add)
-		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
-	
-		.get('/update/nv=:id',controllers.nhanvien.update)
-		// .post('/delete/success',controllers.nhanvien.delete)
-		.post('/addnhanvien/success',controllers.nhanvien.addSuccess)
-		.post('/update/success',controllers.nhanvien.updateSuccess);
-
-	var login=Router()
-		.get('/',controllers.login.index);
-	
+module.exports = function(app) {
+    function isloginedIn(req, res, next) //nếu đã đăng nhập thì thực hiện các công việc đã đăng nhập.
+    {
+        if (req.isAuthenticated()) {
+            return next();
+        } else {
+            res.redirect('/admin/login');
+        }
 
 
-	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
-	app.use('/profile',isloginedIn,profileRouter);
-	app.use('/admin/listnhanvien',isloginedIn,listNhanVien);
-	app.use('/admin/login',isloginedIn2,login);
-	
+    }
 
-	var QuanTriTuyenDuong = Router()
+    function isloginedIn2(req, res, next) //nếu đã đăng nhập thì không được request login hay đăng ký nữa
+    {
+        if (req.isAuthenticated()) {
+            res.redirect('/admin/dashboard');
+        } else {
+            return next();
+        }
+
+    }
+
+    var dashboardRouter = Router()
+        .get('/', controllers.dashboard.index)
+        .post('/', controllers.dashboard.index);
+
+    var profileRouter = Router()
+        .get('/', controllers.profile.index);
+
+    var listNhanVien = Router()
+        .get('/', controllers.nhanvien.index)
+
+        // call by Ajax
+        .get('/finnvbycmnd', controllers.nhanvien.findNVbyCMND)
+        .get('/addnhanvien', controllers.nhanvien.add)
+        // .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
+
+        .get('/update/nv=:id', controllers.nhanvien.update)
+        // .post('/delete/success',controllers.nhanvien.delete)
+        .post('/addnhanvien/success', controllers.nhanvien.addSuccess)
+        .post('/update/success', controllers.nhanvien.updateSuccess);
+
+    var login = Router()
+        .get('/', controllers.login.index);
+
+
+
+    app.use('/admin/dashboard', isloginedIn, dashboardRouter);
+    app.use('/profile', isloginedIn, profileRouter);
+    app.use('/admin/listnhanvien', isloginedIn, listNhanVien);
+    app.use('/admin/login', isloginedIn2, login);
+
+
+    var QuanTriTuyenDuong = Router()
         .get('/', controllers.QuanTriTuyenDuong.index)
+        .get('/RepeatableRead', controllers.QuanTriTuyenDuongRepeatableRead.index)
         .get('/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
+        .get('/XemTuyenDuongRepeatableRead', controllers.QuanTriTuyenDuongRepeatableRead.xemTuyenDuong)
         .post('/XoaTuyenDuong', controllers.QuanTriTuyenDuong.xoaTuyenDuong)
         .post('/ThemTuyenDuong', controllers.QuanTriTuyenDuong.themTuyenDuong)
         .post('/CapNhatTuyenDuong', controllers.QuanTriTuyenDuong.capNhatTuyenDuong);
 
+
     var QuanTriChuyenDi = Router()
         .get('/', controllers.QuanTriChuyenDi.index)
+        .get('/Rollback', controllers.QuanTriChuyenDiRollback.index)
         .get('/XemTatCaChuyenDi', controllers.QuanTriChuyenDi.xemTatCaChuyenDi)
         .get('/XemChuyenDiChuaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiChuaXuatPhat)
+        .get('/XemChuyenDiChuaXuatPhat/Rollback', controllers.QuanTriChuyenDiRollback.xemChuyenDiChuaXuatPhat)
         .get('/XemChuyenDiDaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiDaXuatPhat)
         .post('/XoaChuyenDi', controllers.QuanTriChuyenDi.xoaChuyenDi)
         .post('/ThemChuyenDi', controllers.QuanTriChuyenDi.themChuyenDi)
+        .post('/CapNhatChuyenDi/Rollback', controllers.QuanTriChuyenDiRollback.capNhatChuyenDi)
         .post('/CapNhatChuyenDi', controllers.QuanTriChuyenDi.capNhatChuyenDi);
 
     var QuanTriLoaiNhanVien = Router()
@@ -94,44 +97,43 @@ module.exports=function(app)
 
     var ThongKe = Router()
         .get('/DoanhThu', controllers.ThongKe.index)
+        .get('/DoanhThuSerializable', controllers.ThongKeSerializable.index)
         .get('/DoanhThu/XemTatCaChuyenDi', controllers.QuanTriChuyenDi.xemTatCaChuyenDi)
         .get('/DoanhThu/XemChuyenDiChuaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiChuaXuatPhat)
         .get('/DoanhThu/XemChuyenDiDaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiDaXuatPhat)
         .get('/DoanhThu/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
         .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu)
-        .get('/LuongNhanVien',controllers.ThongKe.thongkeLuong);
+        .post('/DoanhThuSerializable', controllers.ThongKeSerializable.thongKeDoanhThu)
+        .get('/LuongNhanVien', controllers.ThongKe.thongkeLuong);
 
-    
-   app.use('/QuanTriTuyenDuong', isloginedIn,QuanTriTuyenDuong);
-    app.use('/QuanTriChuyenDi', isloginedIn,QuanTriChuyenDi);
-    app.use('/QuanTriLoaiNhanVien',isloginedIn, QuanTriLoaiNhanVien);
-    app.use('/PhanCongTaiXeLaiChuyenDi', isloginedIn,PhanCongTaiXeLaiChuyenDi);
-    app.use('/ThongKe', isloginedIn,ThongKe);
-	
+    var ThanhToanVeNhanVien = Router()
+        .get('/', controllers.ThanhToanVeNhanVien.index)
+        .post('/MaVe', controllers.ThanhToanVeNhanVien.xemVe)
+        .post('/', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVien);
 
 
+    app.use('/QuanTriTuyenDuong', isloginedIn, QuanTriTuyenDuong);
+    app.use('/QuanTriChuyenDi', isloginedIn, QuanTriChuyenDi);
+    app.use('/QuanTriLoaiNhanVien', isloginedIn, QuanTriLoaiNhanVien);
+    app.use('/PhanCongTaiXeLaiChuyenDi', isloginedIn, PhanCongTaiXeLaiChuyenDi);
+    app.use('/ThongKe', isloginedIn, ThongKe);
+    app.use('/ThanhToanVeNhanVien', isloginedIn, ThanhToanVeNhanVien);
 
-	
+    app.post('/admin/login', passport.authenticate('local.login', {
+        successRedirect: '/admin/dashboard',
+        failureRedirect: '/admin/login',
+        failureFlash: true
+    }));
 
-	app.post('/admin/login',passport.authenticate('local.login', {
-				
+    app.get('/admin/logout', function(req, res) {
+        req.logout();
+        res.redirect('/admin/login');
 
-				successRedirect :'/admin/dashboard',
-				failureRedirect:'/admin/login',
-				failureFlash:true
-			}));
+    });
 
-	app.get('/admin/logout',function(req,res)
-	{
-		req.logout();
-		res.redirect('/admin/login');
+    app.post('/admin/logout', function(req, res) {
+        req.logout();
+        res.redirect('/admin/login');
 
-	});
-
-	app.post('/admin/logout',function(req,res)
-	{
-		req.logout();
-		res.redirect('/admin/login');
-
-	});
-}
+    });
+};

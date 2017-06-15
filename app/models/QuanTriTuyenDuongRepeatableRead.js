@@ -9,11 +9,11 @@ var QuanTriTuyenDuong = {
                 callback(err, null);
             }
             pool.request()
-                .execute('xemTuyenDuong', function(error, result) {
+                .execute('xemTuyenDuongRepeatableRead', function(error, result) {
                     if (error) {
                         callback(error, null);
                     }
-                    console.log('not repeatable');
+                    console.log('repeatable');
                     var data = [];
 
                     for (i = 0; i < result.recordsets[0].length; i++) {
