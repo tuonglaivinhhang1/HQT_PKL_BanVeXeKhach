@@ -142,6 +142,26 @@ var listxeAll={
 
 		
 	},
+	findloaixe:function(req,res)
+	{
+		listxe.getXEbyLX(req.query['lx'],function(err,ListXe)
+		{
+
+			
+
+			if(ListXe.length==0)
+			{
+				res.end(JSON.stringify(null));
+			}
+			else{
+					
+				// console.log(ListXe);
+				
+				
+				res.end(JSON.stringify(ListXe));
+			}
+		});
+	}
 	
 };
 

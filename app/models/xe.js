@@ -56,6 +56,32 @@ var GetListXe={
  
 		});
 	},
+	getXEbyLX:function(lx,callback)
+	{
+
+		const pool = new sql.ConnectionPool(config, err => {
+    		if(err)
+    		{
+    			console.log(err);
+    			
+    		}
+    		else
+    		{
+    			pool.request() 
+
+	    			.input('loaixe', sql.NVarChar(50),lx)
+
+	    			.output('error', sql.NVarChar(500))
+				    .execute('ThongKeTheoLoaiXe',
+					 function(err,recordset) {						       
+    					
+				      callback(err,recordset);
+
+			        
+		   			 })
+    		}
+		});
+	},
 	update:function(xe,callback)
 	{
 		const pool = new sql.ConnectionPool(config, err => {

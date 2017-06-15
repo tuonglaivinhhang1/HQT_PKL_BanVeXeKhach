@@ -32,6 +32,21 @@
                      
                     </p>
 
+                    <form id="searchxelx">
+                     
+                      
+                    
+                            
+                              <div class="input-group">
+                                <input type="text" id="tblx" placeholder="Nhập Loại Xe..." class="form-control">
+                                <span class="input-group-btn">
+                                  <input type="submit" id="searchlx" class="btn btn-primary" value="Search">
+                                  </span>
+                              </div>
+                      
+
+                    </form>
+
                   
                   
                     <button style="float: right;" class="btn btn-primary" type="submit"><a href="/admin/listxe/addxe" style="text-decoration: none;color:white">Thêm Xe</a></button>
@@ -87,8 +102,7 @@
 
         </div>
 
-
-      <!--  <script
+<script
   src="https://code.jquery.com/jquery-2.2.4.js"
   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
   crossorigin="anonymous"></script>
@@ -96,12 +110,12 @@
 
                   $(document).ready(function() {
 
-                    var frm = $('#searchnhanvien');
+                    var frm = $('#searchxelx');
                     var bodytag=$('body');
                     var urlimage='/images/loadgif.gif';
 
 
-                    // var data = frm.serialize();
+               
 
                     frm.submit(function(e){
 
@@ -116,11 +130,11 @@
                           $.ajax({
 
                               type:'GET',
-                              url:'/admin/listnhanvien/finnvbycmnd?tbcmnd='+$('#tbcmnd').val(),
+                              url:'/admin/listxe/findxe?lx='+$('#tblx').val(),
                               
                               dataType: 'json', 
                               async: true,
-                               contentType: 'application/json; charset=utf-8',
+                              contentType: 'application/json; charset=utf-8',
 
                             
                            
@@ -131,44 +145,24 @@
                                var notify=$('.notify');
 
 
-                                if(result == null)
+                                if(result.recordset.length == 0)
                                 {
                                  notify.empty();
-                                notify.append('Không tìm thấy nhân viên nào');
+                                notify.append('Không tìm thấy  xe nào');
 
-                                  tbodyobj.empty();
-                               
-
-                                  
-
+                                  tbodyobj.empty();                                                        
 
                                 }
+
                                 else{
                                   notify.empty();
 
                                   tbodyobj.empty();
-                                  tbodyobj.append('\
-                                    <tr>\
-                          <td>'+result.MaNhanVien+'</td>\
-                          <td>'+result.TenNhanVien+'</td>\
-                          <td>'+result.GioiTinhNV+'</td>\
-                          <td>'+result.DiaChiNV+'</td>\
-                          <td>'+result.SoCMNDNV+'</td>\
-                          <td>'+result.NgaySinhNV+'</td>\
-                          <td>'+result.DienthoaiNV+'</td>\
-                          <td>'+result.TenDangNhapNV+'</td>\
-                          <td>'+result.LoaiNhanVien+'</td>\
-                          <td>'+result.Luong+'</td>\
-                          <td>'+result.BangLai+'</td>\
-                          <td>'+result.KhaNangLaiDuongDai+'</td>\
-                          <td>\
-                            <a href="#" class="btn btn-success">Xem</a>\
-                            <a href="/admin/listnhanvien/update/nv='+result.MaNhanVien+'" class="btn btn-warning">Sửa</a>\
-                          </td>\
-                        </tr>\
-                                    ');
-
-                                  // /c/console.log(result[0].DiaChiNV);
+                                  
+                              for(var i=0;i<result.recordset.length;i++)
+                              {
+                                 tbodyobj.append('<tr><td>'+result.recordset[i].MaXe+'</td><td>'+result.recordset[i].LoaiXe+'</td><td>'+result.recordset[i].BienSoXe+'</td><td>'+result.recordset[i].SoLuongGhe+'</td><td><a href="/admin/listtaikhoan/update/mtk='+result.recordset[i].MaTaiKhoan+'" class="btn btn-warning">Sửa</a></td></tr>');
+                                }
 
                                 }
                               
@@ -188,5 +182,3 @@
                    
                   });
           </script>
-
- -->

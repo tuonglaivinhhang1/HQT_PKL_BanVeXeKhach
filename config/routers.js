@@ -71,7 +71,8 @@ module.exports=function(app)
 		.get('/addxe',controllers.xe.add)
 		.post('/addxe/submit',controllers.xe.addsubmit)
 		.get('/update/mx=:id',controllers.xe.update)
-		.post('/update/submit',controllers.xe.updatesubmit);
+		.post('/update/submit',controllers.xe.updatesubmit)
+		.get('/findxe',controllers.xe.findloaixe);
 
 	var ListGhe=Router()
 		.get('/',controllers.ghe.index)

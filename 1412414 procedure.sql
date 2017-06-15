@@ -128,7 +128,7 @@ commit tran
 
 ------------------------XÓA TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
-
+go
 --Procedure kiểm tra xem còn chuyến đi nào tham chiếu đến tuyến đường không
 create procedure khongConChuyenDiThamChieuDenTuyenDuong @MaTuyenDuong varchar(10)
 as
@@ -267,7 +267,7 @@ begin tran
 	end
 commit tran
 
-
+go
 --Procedure cập nhật tuyến đường
 --------------------------------
 create procedure capNhatTuyenDuongRepeatableRead @MaTuyenDuong varchar(10), @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50), @BenDi nvarchar(50), @BenDen nvarchar(50), @QuangDuong int, @error nvarchar(100) out
@@ -328,7 +328,7 @@ begin tran
 		set @error = 'Tuyến đường không tồn tại'
 	end
 commit tran
-
+go
 --Procedure cập nhật tuyến đường
 --------------------------------
 create procedure capNhatTuyenDuongReadUncommitted @MaTuyenDuong varchar(10), @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50), @BenDi nvarchar(50), @BenDen nvarchar(50), @QuangDuong int, @error nvarchar(100) out
@@ -390,7 +390,7 @@ begin tran
 	end
 commit tran
 
-
+go
 ------------------------XEM TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
 create procedure xemTuyenDuong
@@ -861,7 +861,7 @@ begin tran
 	end
 commit tran
 
-
+go
 --Procedure cập nhật chuyến đi rollback tran
 ---------------------------------------
 create procedure capNhatChuyenDiRollback @MaChuyenDi varchar(10), @MaTuyenDuong varchar(10), @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @GiaMoiQuangDuong int, @error nvarchar(100) out
@@ -1013,7 +1013,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --Procedure xem chuyến đi chưa xuất phát
 -------------------------
 create procedure xemChuyenDiChuaXuatPhatReadUncommitted
@@ -1354,7 +1354,7 @@ end
 
 --Kiểm tra xem vé đã duyệt
 --------------------------
-
+go
 create procedure veDaDuyet @MaVe varchar(10)
 as
 begin
@@ -1547,7 +1547,7 @@ begin tran
 		 return 
 	   end
 commit tran
-
+go
 --Kiểm tra nhân viên thanh toán có tồn tại
 ------------------------------------------
 create procedure nhanVienThanhToanCoTonTai @MaNV varchar(10)
