@@ -25,5 +25,30 @@ module.exports={
 				}
 
 				return "";
-	}
+	},
+	selectedLoaiTaiKhoan:function(valueSelected)
+	{
+		
+
+				if(valueSelected==undefined)
+				{
+					return "";
+				}
+				if(valueSelected.message.toLowerCase()=="vip")
+				{
+					return '<option value="vip" selected>VIP</option> <option value="khtt">Khách Hàng Thân Thiết</option> <option value="tv" >Thành Viên</option>';
+				}
+				if(valueSelected.message.toLowerCase()=="khách hàng thân thiết")
+				{
+					return '<option value="vip" >VIP</option> <option value="khtt" selected>Khách Hàng Thân Thiết</option> <option value="tv" >Thành Viên</option>';
+				}
+				if(valueSelected.message.toLowerCase()=="thành viên")
+				{
+
+					return '<option value="vip" >VIP</option> <option value="khtt">Khách Hàng Thân Thiết</option> <option value="tv" selected >Thành Viên</option>';
+				}
+				
+
+				return "";
+	},
 };

@@ -96,100 +96,95 @@ var listnhanvienAll={
 
 		});
 	},
-	addSuccess:function(req,res)
+	addsubmit:function(req,res)
 	{
-
+		
+		
 
 		if(checkEmptyForm(req.body.name,req.body.gioitinh,req.body.diachi,req.body.cmnd,
 			req.body.dienthoai,
 			req.body.ngaysinh,req.body.tdn,req.body.mk,req.body.Category,req.body.luong))
 			{
+					res.send({
+						error:"Phải điền đầy đủ các thông tin bắt buộc"
+					});
 
-					res.render('nhanvien/add',{
-					title:"Thêm nhân viên",
-					messageDetail:"Vui lòng nhập đầy đủ thông tin theo yêu cầu"
+			
 
-				});
 			}
 		else
 		{
-			var LoaiNhanVienGet;
-			var GioiTinhGet;
-			if(req.body.gioitinh=="m")
-			{
-				GioiTinhGet='Nam';
-			}
-			else if(req.body.gioitinh=="fm")
-			{
-				GioiTinhGet='Nữ';
-			}
 			
 
-			if(req.body.Category=="tx")
-			{
-				LoaiNhanVienGet='LNV001';
-			}
-			else if(req.body.Category=="dv")
-			{
-				LoaiNhanVienGet='LNV003';
-			}
-			else if(req.body.Category=="tt")
-			{
-				LoaiNhanVienGet='LNV004';
-			}
-			else if(req.body.Category=="ql")
-			{
-				LoaiNhanVienGet='LNV002';
-			}
-			
-		 }
+				var LoaiNhanVienGet;
+				
+				
+				
 
-		
-			listnhanvien.addNhanVien({
-					name:req.body.name,
-					loainhanvien:LoaiNhanVienGet,
-					gioitinh:GioiTinhGet,
-					diachi: req.body.diachi,
-					cmnd:req.body.cmnd,
-					dienthoai:req.body.dienthoai,
-					ngaysinh:req.body.ngaysinh,
-					tendangnhap:req.body.tdn,
-					matkhau:req.body.mk,
-
-					luong:parseInt(req.body.luong),
-					banglai: req.body.banglai,
-					khanang:parseInt(req.body.khanang),
-					
-			},function(err,result)
-			{
-				if(err || result.output.error!=null)
+				if(req.body.Category=="Tài Xế")
 				{
-					console.log(err);
-					console.log(result);
+					LoaiNhanVienGet='LNV001';
+				}
+				else if(req.body.Category=="Nhân Viên Đặt Vé")
+				{
+					LoaiNhanVienGet='LNV003';
+				}
+				else if(req.body.Category=="Nhân Viên Thanh Toán")
+				{
+					LoaiNhanVienGet='LNV004';
+				}
+				else if(req.body.Category=="Nhân Viên Quản Lý")
+				{
+					LoaiNhanVienGet='LNV002';
+				}
+			
+				listnhanvien.addNhanVien({
+						name:req.body.name,
+						loainhanvien:LoaiNhanVienGet,
+						gioitinh:req.body.gioitinh,
+						diachi: req.body.diachi,
+						cmnd:req.body.cmnd,
+						dienthoai:req.body.dienthoai,
+						ngaysinh:req.body.ngaysinh,
+						tendangnhap:req.body.tdn,
+						matkhau:req.body.mk,
 
-
-					if(result==null)
+						luong:parseInt(req.body.luong),
+						banglai: req.body.banglai,
+						khanang:parseInt(req.body.khanang),
+						
+				},function(err,result)
+				{
+					if(err || result.output.error!=null)
 					{
-						res.render('nhanvien/add',{
-						title:"Thêm Nhân Viên",
-						messageDetail:"Thêm thất bại. Vui lòng thử lại."});
+						// console.log(err);
+						// console.log(result);
 
+
+						if(result.length==0)
+						{
+							res.send({
+							error:"Thêm thất bại. Vui lòng thử lại."
+						});
+
+				
+
+						}
+						else{
+
+							res.send({
+							error:"Thêm thất bại. Vui lòng thử lại. Lỗi: "+result.output.error
+						});
+						
 					}
-					else{
-						res.render('nhanvien/add',{
-						title:"Thêm Nhân Viên",
-						messageDetail:"Thêm thất bại. Vui lòng thử lại.Lỗi: "+result.output.error});
-					}
-					
 				}
 				else
 				{
-					res.render('nhanvien/addSuccess',{
-							title:"Thêm Thành Công",
-							messageDetail:"Nhân Viên đã được thêm thành công"
-						});
-					}//end else
-				});
+					res.send({
+						success:"Thêm Thành Công"});
+				}
+			});
+		}
 	},
 	// detail:function(req,res)
 	// {
@@ -394,7 +389,7 @@ var listnhanvienAll={
 					if(err)
 					{
 				
-						res.status(404).send("Cập nhật thất bại. Vui lòng thử lại. Lỗi: "+nhanvien.output);
+						res.status(404).send("Cập nhật thất bại. Vui lòng thử lại. Lỗi: "+err);
 					}
 					else
 					{

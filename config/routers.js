@@ -45,19 +45,21 @@ module.exports=function(app)
 		.get('/',controllers.nhanvien.index)
 
 		// call by Ajax
+
 		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
 		.get('/addnhanvien',controllers.nhanvien.add)
+
+		.post('/addnhanvien/submit',controllers.nhanvien.addsubmit)
 		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
 	
 		.get('/update/nv=:id',controllers.nhanvien.update)
 		// .post('/delete/success',controllers.nhanvien.delete)
-		.post('/addnhanvien/success',controllers.nhanvien.addSuccess)
+		
 		.post('/update/success',controllers.nhanvien.updateSuccess);
 
 	var login=Router()
 		.get('/',controllers.login.index);
 	
-
 
 	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
 	app.use('/profile',isloginedIn,profileRouter);
@@ -101,13 +103,22 @@ module.exports=function(app)
         .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu)
         .get('/LuongNhanVien',controllers.ThongKe.thongkeLuong);
 
+    var TaiKhoan=Router()
+    	.get('/',controllers.taikhoan.index)
+    	.get('/findtk',controllers.taikhoan.findTKbyLTK)
+    	.get('/update/mtk=:id',controllers.taikhoan.update)
+    	.post('/update/submit',controllers.taikhoan.updatesubmit);
+
+
+
     
    app.use('/QuanTriTuyenDuong', isloginedIn,QuanTriTuyenDuong);
     app.use('/QuanTriChuyenDi', isloginedIn,QuanTriChuyenDi);
     app.use('/QuanTriLoaiNhanVien',isloginedIn, QuanTriLoaiNhanVien);
     app.use('/PhanCongTaiXeLaiChuyenDi', isloginedIn,PhanCongTaiXeLaiChuyenDi);
     app.use('/ThongKe', isloginedIn,ThongKe);
-	
+	app.use('/admin/listtaikhoan',isloginedIn,TaiKhoan);
+
 
 
 

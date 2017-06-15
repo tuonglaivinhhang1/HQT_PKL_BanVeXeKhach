@@ -22,7 +22,7 @@ begin
 	--true
 	return 1;
 end
-
+go
 --Tạo mã mới cho tuyến đường
 ----------------------------
 create procedure taoMaTuyenDuong @MaMoi varchar(10) out
@@ -64,7 +64,7 @@ begin
 		return
 	end
 end
-
+go
 --Thêm tuyến đường
 ------------------
 create procedure themTuyenDuong @NoiXuatPhat nvarchar(50), @NoiDen nvarchar(50), @BenDi nvarchar(50), @BenDen nvarchar(50), @QuangDuong int, @error nvarchar(100) out
@@ -124,8 +124,8 @@ begin tran
 	begin
 		set @error = 'Nơi đến và nơi xuất phát phải khác nhau'
 	end
-commit tran tran
-
+commit tran
+go
 ------------------------XÓA TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ begin
 		return 1;
 	end
 end
-
+go
 --Kiểm tra tồn tại của tuyến đường
 ----------------------------------
 create procedure tuyenDuongCoTonTai @MaTuyenDuong varchar(10)
@@ -161,7 +161,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Procedure xóa tuyến đường
 ---------------------------
 create procedure xoaTuyenDuong @MaTuyenDuong varchar(10),@error nvarchar(100) out
@@ -203,7 +203,7 @@ begin tran
 		set @error = 'Tuyến đường không tồn tại'
 	end
 commit tran
-
+go
 ------------------------CẬP NHẬT TUYẾN ĐƯỜNG--------------------------
 ----------------------------------------------------------------------
 
@@ -266,7 +266,7 @@ begin tran
 		set @error = 'Tuyến đường không tồn tại'
 	end
 commit tran
-
+go
 ------------------------XEM TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
 create procedure xemTuyenDuong
@@ -283,7 +283,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 ------------------------XEM TUYẾN ĐƯỜNG-------------------------------
 ----------------------------------------------------------------------
 create procedure xemTuyenDuongISO
@@ -301,7 +301,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --*********************************************************************************************************************--
 --****************************************** BẢNG CHUYENDI ************************************************************--
 --*********************************************************************************************************************--
@@ -325,7 +325,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Kiểm tra ngày giờ xuất phát và ngày giờ đến
 ---------------------------------------------
 create procedure ngayGioXuatPhatNhoHonNgayGioDen @NgayGioXuatPhat datetime, @NgayGioDen datetime
@@ -343,7 +343,7 @@ begin
 		return 1
 	end
 end
-
+go
 --Kiểm tra xe đã được sử dụng trong khoảng thời gian đó hay chưa
 ----------------------------------------------------------------
 create procedure xeChuaDuocSuDung @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @MaChuyenDi varchar(10)
@@ -386,7 +386,7 @@ begin
 		end
 	end
 end
-
+go
 --Tính giá dự kiến cho chuyến đi
 --------------------------------
 create procedure tinhGiaDuKien @MaTuyenDuong varchar(10), @MaXe varchar(10), @GiaMoiQuangDuong int
@@ -417,7 +417,7 @@ begin
 		return @GiaDuKien
 	end
 end
-
+go
 --Tạo mã mới cho chuyến đi
 ----------------------------
 create procedure taoMaChuyenDi @MaMoi varchar(10) out
@@ -459,7 +459,7 @@ begin
 		return
 	end
 end
-
+go
 --Thêm chuyến đi
 ----------------
 create procedure themChuyenDi @MaTuyenDuong varchar(10), @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @GiaMoiQuangDuong int, @error nvarchar(100) out
@@ -557,7 +557,7 @@ begin tran
 		set @error = 'Không tồn tại xe này'
 	end
 commit tran
-
+go
 ------------------------XÓA CHUYẾN ĐI---------------------------------
 ----------------------------------------------------------------------
 
@@ -577,7 +577,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Procedure kiểm tra xem có vé nào tham chiếu đến chuyến đi hay không
 ---------------------------------------------------------------------
 create procedure khongConVeThamChieuDenChuyenDi @MaChuyenDi varchar(10)
@@ -594,7 +594,7 @@ begin
 		return 1;
 	end
 end
-
+go
 --Procedure xóa chuyến đi
 -------------------------
 create procedure xoaChuyenDi @MaChuyenDi varchar(10), @error nvarchar(100) out
@@ -635,7 +635,7 @@ begin tran
 		set @error = 'Chuyến đi này không tồn tại'
 	end
 commit tran
-
+go
 ------------------------CẬP NHẬT CHUYẾN ĐI----------------------------
 ----------------------------------------------------------------------
 
@@ -736,7 +736,7 @@ begin tran
 		set @error = 'Không tồn tại chuyến đi này'
 	end
 commit tran
-
+go
 --Procedure cập nhật chuyến đi rollback tran
 ---------------------------------------
 create procedure capNhatChuyenDiRollback @MaChuyenDi varchar(10), @MaTuyenDuong varchar(10), @NgayGioXuatPhat datetime, @NgayGioDen datetime, @MaXe varchar(10), @GiaMoiQuangDuong int, @error nvarchar(100) out
@@ -839,7 +839,7 @@ begin tran
 		set @error = 'Không tồn tại chuyến đi này'
 	end
 commit tran
-
+go
 ------------------------XEM CHUYẾN ĐI---------------------------------
 ----------------------------------------------------------------------
 
@@ -857,7 +857,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --Procedure xem chuyến đi chưa xuất phát
 -------------------------
 create procedure xemChuyenDiChuaXuatPhat
@@ -872,7 +872,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --Procedure xem chuyến đi chưa xuất phát
 -------------------------
 create procedure xemChuyenDiChuaXuatPhatISO
@@ -888,7 +888,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --Procedure xem chuyến đi đã xuất phát
 -------------------------
 create procedure xemChuyenDiDaXuatPhat
@@ -903,7 +903,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --*********************************************************************************************************************--
 --****************************************** BẢNG LOAI NHANVIEN ************************************************************--
 --*********************************************************************************************************************--
@@ -952,7 +952,7 @@ begin
 		return
 	end
 end
-
+go
 --Procedure thêm loại nhân viên
 create procedure themLoaiNhanVien @TenLoaiNV nvarchar(50), @error nvarchar(100) out
 as
@@ -990,7 +990,7 @@ begin tran
 		end
 	end
 commit tran
-
+go
 ------------------------CẬP NHẬT LOẠI NHÂN VIÊN-----------------------
 ----------------------------------------------------------------------
 
@@ -1010,7 +1010,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Procedure cập nhật loại nhân viên
 -----------------------------------
 create procedure capNhatLoaiNhanVien @MaLoaiNV varchar(10), @TenLoaiNV nvarchar(50), @error nvarchar(100) out
@@ -1051,7 +1051,7 @@ begin tran
 		set @error = 'Mã loại nhân viên không tồn tại'
 	end
 commit tran
-
+go
 ------------------------XÓA LOẠI NHÂN VIÊN----------------------------
 ----------------------------------------------------------------------
 
@@ -1071,7 +1071,7 @@ begin
 		return 1;
 	end
 end
-
+go
 --Procedure xóa loại nhân viên
 ------------------------------
 create procedure xoaLoaiNhanVien @MaLoaiNV varchar(10), @error nvarchar(100) out
@@ -1113,7 +1113,7 @@ begin tran
 		set @error = 'Mã loại nhân viên không tồn tại'
 	end
 commit tran
-
+go
 ------------------------XEM LOẠI NHÂN VIÊN----------------------------
 ----------------------------------------------------------------------
 
@@ -1131,7 +1131,7 @@ begin tran
 		return
 	end
 commit tran
-
+go
 --*********************************************************************************************************************--
 --****************************************** BẢNG VE ******************************************************************--
 --*********************************************************************************************************************--
@@ -1155,7 +1155,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Kiểm tra vé có tồn tại
 ------------------------
 create procedure veCoTonTai @MaVe varchar(10)
@@ -1172,7 +1172,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Kiểm tra tên đăng nhập có tồn tại
 create procedure tenDangNhapCoTonTai @TenDangNhap varchar(50)
 as
@@ -1188,7 +1188,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Kiểm tra giá vé thực và số tiền có giống nhau
 create procedure giaVeThucVaSoTienGiongNhau @MaVe varchar(10), @SoTien int
 as
@@ -1208,7 +1208,7 @@ begin
 		return 0;
 	end
 end
-
+go
 create procedure veDaDuyet @MaVe varchar(10)
 as
 begin
@@ -1223,7 +1223,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Thanh toán vé của khách hàng
 ------------------------------
 create procedure thanhToanVeKhachHang @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @TenDangNhap varchar(50), @SoTien int, @error nvarchar(100) out
@@ -1372,7 +1372,7 @@ begin tran
 		end
 	end
 commit tran
-
+go
 ------------------------THANH TOÁN VÉ CỦA NHÂN VIÊN-------------------
 ----------------------------------------------------------------------
 
@@ -1392,7 +1392,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Thanh toán vé của nhân viên
 ------------------------------
 create procedure thanhToanVeNhanVien @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @MaNV varchar(10), @SoTien int, @error nvarchar(100) out
@@ -1456,7 +1456,7 @@ begin tran
 		set @error = 'Vé này không tồn tại'
 	end
 commit tran
-
+go
 ------------------------THỐNG KÊ DOANH THU----------------------------
 ----------------------------------------------------------------------
 
@@ -1546,7 +1546,7 @@ begin tran
 		end
 	end
 commit tran
-
+go
 --Procedure thống kê doanh thu bán vé trong một khoảng thời gian nào đó có sử dụng isolation
 --------------------------------------------------------------------------------------------
 create procedure thongKeDoanhThuTheoThoiGianISO @NgayBatDau datetime, @NgayKetThuc datetime, @error nvarchar(100) out, @TongDoanhThu int out
@@ -1634,7 +1634,7 @@ begin tran
 		end
 	end
 commit tran
-
+go
 --Procedure thống kê doanh thu bán vé theo chuyến đi
 ----------------------------------------------------
 create procedure thongKeDoanhThuTheoChuyenDi @MaChuyenDi varchar(10), @error nvarchar(100) out, @TongDoanhThu int out
@@ -1669,7 +1669,7 @@ begin tran
 		set @error = 'Chuyến đi không tồn tại'
 	end
 commit tran
-
+go
 --Procedure thống kê doanh thu bán vé theo tuyến đường trong một khoảng thời gian nào đó
 ----------------------------------------------------------------------------------------
 create procedure thongKeDoanhThuTheoThoiGianTuyenDuong @NgayBatDau datetime, @NgayKetThuc datetime, @MaTuyenDuong varchar(10), @error nvarchar(100) out, @TongDoanhThu int out
@@ -1762,7 +1762,7 @@ begin tran
 		set @error = 'Tuyến đường không tồn tại'
 	end
 commit tran
-
+go
 --*********************************************************************************************************************--
 --****************************************** BẢNG PHANCONGTAIXELAICHUYENDI ********************************************--
 --*********************************************************************************************************************--
@@ -1782,7 +1782,7 @@ begin tran
 		rollback tran return
 	end
 commit tran
-
+go
 --Kiểm tra tài xế có tồn tại
 ------------------------------------------
 create procedure taiXeCoTonTai @MaNV varchar(10)
@@ -1799,7 +1799,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Kiểm tra tài xế đã lái chuyến đi nào khác trong khoảng thời gian đó hay chưa
 ----------------------------------------------------------------
 create procedure taiXeChuaLaiChuyenKhac @MaChuyenDi varchar(10), @TaiXe varchar(10)
@@ -1831,7 +1831,7 @@ begin
 		return 1;
 	end
 end
-
+go
 --Procedure kiểm tra tài xế có được phân công lái xe đó hay không
 -----------------------------------------------------------------
 create procedure taiXeCoTheLaiXe @MaChuyenDi varchar(10), @TaiXe varchar(10)
@@ -1856,7 +1856,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Procedure kiểm tra khả năng lái quảng đường của tài xế
 --------------------------------------------------------
 create procedure taiXeCoTheLaiQuangDuong @TaiXe varchar(10), @MaChuyenDi varchar(10)
@@ -1890,7 +1890,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Procedure phân công tài xế lái chuyến đi
 ------------------------------------------
 create procedure phanCongTaiXeLaiCD @MaChuyenDi varchar(10), @TaiXe varchar(10), @LoaiTaiXe nvarchar(50), @error nvarchar(100) out
@@ -1966,3 +1966,4 @@ begin tran
 		set @error = 'Chuyến đi này không tồn tại'
 	end
 commit tran
+go
