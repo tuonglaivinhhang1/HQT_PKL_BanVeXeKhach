@@ -32,27 +32,88 @@ var ThanhToanVeNhanVienController = {
     },
     thanhToanVeNhanVien: function(req, res) {
         var MaNV = 'NV006';
-        ThanhToanVeNhanVien.thanhToanVeNhanVien(req.body.MaVe, req.body.GiaVeThuc, MaNV, function(error, errorMessage, result) {
+        ThanhToanVeNhanVien.thanhToanVeNhanVien(req.body.MaVe, req.body.GiaVeThuc, MaNV, function(error, errorMessage) {
+            var data = {
+                error: null,
+                errorMessage: '',
+            };
+
             if (error) {
-                res.render('ThanhToanVeNhanVien/ThanhToanVeNhanVien', {
-                    title: 'Thanh toán vé nhân viên',
-                    error: error
-                });
+                data.error = error;
+                res.send(data);
             } else {
                 if (errorMessage) {
-                    res.render('ThanhToanVeNhanVien/ThanhToanVeNhanVien', {
-                        title: 'Thanh toán vé nhân viên',
-                        errorMessage: errorMessage
-                    });
+                    data.errorMessage = errorMessage;
+                    res.send(data);
                 } else {
-                    res.render('ThanhToanVeNhanVien/ThanhToanVeNhanVien', {
-                        title: 'Thanh toán vé nhân viên',
-                        success: 'successfully'
-                    });
+                    res.send(data);
                 }
             }
         });
-    }
+    },
+    thanhToanVeNhanVienWaitforDelayXLock: function(req, res) {
+        var MaNV = 'NV006';
+        ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayXLock(req.body.MaVe, req.body.GiaVeThuc, MaNV, function(error, errorMessage) {
+            var data = {
+                error: null,
+                errorMessage: '',
+            };
+
+            if (error) {
+                data.error = error;
+                res.send(data);
+            } else {
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    res.send(data);
+                }
+            }
+        });
+    },
+    thanhToanVeNhanVienWaitforDelayRepeatableRead: function(req, res) {
+        var MaNV = 'NV006';
+        ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayRepeatableRead(req.body.MaVe, req.body.GiaVeThuc, MaNV, function(error, errorMessage) {
+            var data = {
+                error: null,
+                errorMessage: '',
+            };
+
+            if (error) {
+                data.error = error;
+                res.send(data);
+            } else {
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    res.send(data);
+                }
+            }
+        });
+    },
+    thanhToanVeNhanVienWaitforDelay: function(req, res) {
+        var MaNV = 'NV006';
+        ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelay(req.body.MaVe, req.body.GiaVeThuc, MaNV, function(error, errorMessage) {
+            var data = {
+                error: null,
+                errorMessage: '',
+            };
+
+            if (error) {
+                data.error = error;
+                res.send(data);
+            } else {
+                if (errorMessage) {
+                    data.errorMessage = errorMessage;
+                    res.send(data);
+                } else {
+                    res.send(data);
+                }
+            }
+        });
+    },
 };
 
 module.exports = ThanhToanVeNhanVienController;

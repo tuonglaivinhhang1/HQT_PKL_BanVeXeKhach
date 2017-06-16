@@ -22,7 +22,7 @@ module.exports=function(app)
 			res.redirect('/admin/login');
 		}
 
-		
+
 	}
 	function isloginedIn2(req,res,next)//nếu đã đăng nhập thì không được request login hay đăng ký nữa
 	{
@@ -33,13 +33,13 @@ module.exports=function(app)
 		else{
 			return next();
 		}
-		
+
 	}
 
 	var dashboardRouter=Router()
 		.get('/',controllers.dashboard.index)
 		.post('/',controllers.dashboard.index);
-	
+
 	var profileRouter=Router()
 		.get('/',controllers.profile.index);
 
@@ -52,15 +52,15 @@ module.exports=function(app)
 		.get('/addnhanvien',controllers.nhanvien.add)
 
 		.post('/addnhanvien/submit',controllers.nhanvien.addsubmit)
-	
-	
+
+
 		.get('/update/nv=:id',controllers.nhanvien.update)
-		
-		
+
+
 		.post('/update/submit',controllers.nhanvien.updateSuccess)
 
 		.get('/tangluong/nv=:id',controllers.nhanvien.tangluong)
-		
+
 		.post('/tangluong/submit',controllers.nhanvien.tangluongsubmit);
 
 	var login=Router()
@@ -79,7 +79,7 @@ module.exports=function(app)
 		.get('/addghe',controllers.ghe.add)
 		.post('/addghe/submit',controllers.ghe.addsubmit);
 
-	
+
 
 	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
 	app.use('/profile',isloginedIn,profileRouter);
@@ -140,7 +140,7 @@ module.exports=function(app)
         .post('/DoanhThuSerializable', controllers.ThongKeSerializable.thongKeDoanhThu)
         .get('/LuongNhanVien', controllers.ThongKe.thongkeLuong);
 
-     
+
 
     var TaiKhoan=Router()
     	.get('/',controllers.taikhoan.index)
@@ -150,7 +150,7 @@ module.exports=function(app)
 
 
 
-    
+
 
     app.use('/admin/phancong-taixe/phutrachxe',isloginedIn,PhanCongPhuTrachXe);
 
@@ -163,7 +163,10 @@ module.exports=function(app)
     var ThanhToanVeNhanVien = Router()
         .get('/', controllers.ThanhToanVeNhanVien.index)
         .post('/MaVe', controllers.ThanhToanVeNhanVien.xemVe)
-        .post('/', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVien);
+        .post('/', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVien)
+				.post('/WaitforDelayXLock', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayXLock)
+				.post('/WaitforDelayRepeatableRead', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayRepeatableRead)
+				.post('/WaitforDelay', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelay);
 
 
     app.use('/QuanTriTuyenDuong', isloginedIn, QuanTriTuyenDuong);
