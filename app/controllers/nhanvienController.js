@@ -14,7 +14,7 @@ function checkEmptyForm(name,category,price,DateAdd,status,quantity)
 
 var fs = require('fs');
 
-var listnhanvien=require('../models/nhanvien');
+var listnhanvien = require('../models/nhanvien');
 
 
 var listnhanvienAll={
@@ -50,15 +50,15 @@ var listnhanvienAll={
 			});
 		});
 
-		
+
 	},
 	findNVbyCMND:function(req,res)
 	{
 
 		listnhanvien.getoneCMND(req.query['tbcmnd'],function(err,NhanVien)
 		{
-			
-			
+
+
 			if(NhanVien[0]==null)
 			{
 				res.end(JSON.stringify(null));
@@ -81,11 +81,11 @@ var listnhanvienAll={
 					{
 						NhanVien[0].LoaiNhanVien='Nhân Viên Thanh Toán';
 					}
-				
+
 				res.end(JSON.stringify(NhanVien[0]));
 			}
-			
-			
+
+
 			// res.render('nhanvien/index',{
 			// 	title:"Danh sách nhân viên",
 			// 	NhanVien:NhanVien.recordset,
@@ -157,10 +157,10 @@ var listnhanvienAll={
 	// 		    if (err)
 	// 		      return res.status(500).send(err);
 	// 		});
-			
+
 	// 	 }
 
-		
+
 	// 		listProduct.insert({
 	// 			name:req.body.name,
 	// 			categoryID:CategoryGet,
@@ -203,7 +203,7 @@ var listnhanvienAll={
 	// 			{
 
 	// 				CurrentProduct=ListProduct[i];
-					
+
 	// 				break;
 	// 			}
 	// 		}
@@ -212,7 +212,7 @@ var listnhanvienAll={
 	// 		var Nam=CurrentProduct.dateadd.getFullYear();
 	// 		var datestring=Ngay+"/"+Thang+"/"+Nam;
 
-		
+
 
 	// 		CurrentProduct.dateadd=datestring;
 	// 		res.render('Product/detailitem',{
@@ -223,8 +223,8 @@ var listnhanvienAll={
 
 	// 		});
 	// 	});
-		
-			
+
+
 	// },
 	// delete:function(req,res)
 	// {
@@ -241,7 +241,7 @@ var listnhanvienAll={
 	// 			{
 
 	// 				itemdeleted=ListProduct[i];
-					
+
 	// 				break;
 	// 			}
 	// 		}
@@ -263,7 +263,7 @@ var listnhanvienAll={
 	// 					title:"Xóa thành công",
 	// 					messageDetail:"Đã xóa sản phẩm thành công",
 	// 						});
-			
+
 	// 				}
 	// 				else
 	// 				{
@@ -278,11 +278,11 @@ var listnhanvienAll={
 	// 							title:"Xóa thành công",
 	// 							messageDetail:"Đã xóa sản phẩm thành công",
 	// 								});
-					
+
 	// 						}
 	// 					});
-					
-	// 				}		
+
+	// 				}
 
 	// 			});
 	// 		}
@@ -290,20 +290,20 @@ var listnhanvienAll={
 
 	// 	});
 
-		
-		
+
+
 	// },
 	update:function(req,res)
 	{
 		//truyền tham số tương ứng với sp tới client
-		
+
 		var id=req.params.id;
-		
+
 
 		var CurrentNhanVien;
 		listnhanvien.getoneNVID(id,function(err,nhanvien)
 		{
-			
+
 			if(nhanvien.recordset[0].LoaiNhanVien=='LNV001')
 			{
 				nhanvien.recordset.recordset[0].LoaiNhanVien='Tài xế';
@@ -327,36 +327,36 @@ var listnhanvienAll={
 			var Nam=nhanvien.recordset[0].NgaySinhNV.getFullYear();
 			var datestring=Thang+"/"+Ngay+"/"+Nam;
 
-			
+
 
 				nhanvien.recordset[0].NgaySinhNV=datestring;
 
 
-			
+
 				res.render('nhanvien/update',{
 				title:"Cập nhật thông tin nhân vien",
 				CurrentNhanVien:nhanvien.recordset[0],
 				SelectedValue:
 				{
 					message: nhanvien.recordset[0].LoaiNhanVien
-				
-					
-				}			
+
+
+				}
 
 			});
 
 		});
 
 
-		
+
 	},
 	updateSuccess:function(req,res)
 	{
-		
+
 			var id=req.body.manhanvien;
 
 		var CategoryGet;
-				
+
 				if(req.body.Category=="tx")
 				{
 					CategoryGet='LNV001';
@@ -389,23 +389,23 @@ var listnhanvienAll={
 					khanang:parseInt(req.body.khanang),
 					manhanvien:id
 				},function(err,nhanvien)
-				{	
+				{
 					if(err)
 					{
-				
+
 						res.status(404).send("Cập nhật thất bại. Vui lòng thử lại. Lỗi: "+err);
 					}
 					else
 					{
-						
+
 						res.render('nhanvien/updateSuccess',{
 							title:"Cập nhật thành công",
 							messageDetail:"Đã cập nhật thông tin nhân viên thành công",
 						});
 					}
-				});			
+				});
 
-		
+
 	}
 };
 

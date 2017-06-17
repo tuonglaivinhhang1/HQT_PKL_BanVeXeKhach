@@ -1,8 +1,7 @@
 const config = {
     user: 'sa',
-    password: 'Tietkhaiky2',
-    server: 'localhost',
-
+    password: 'lamtac21',
+    server: 'localhost\\SQLEXPRESS',
     database: 'PHUONGTRANG',
     stream: true,
     options: {

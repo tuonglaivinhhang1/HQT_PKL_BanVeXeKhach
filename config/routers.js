@@ -20,7 +20,7 @@ module.exports=function(app)
 			res.redirect('/admin/login');
 		}
 
-		
+
 	}
 	function isloginedIn2(req,res,next)//nếu đã đăng nhập thì không được request login hay đăng ký nữa
 	{
@@ -31,13 +31,13 @@ module.exports=function(app)
 		else{
 			return next();
 		}
-		
+
 	}
 
 	var dashboardRouter=Router()
 		.get('/',controllers.dashboard.index)
 		.post('/',controllers.dashboard.index);
-	
+
 	var profileRouter=Router()
 		.get('/',controllers.profile.index);
 
@@ -48,7 +48,7 @@ module.exports=function(app)
 		.get('/finnvbycmnd',controllers.nhanvien.findNVbyCMND)
 		// .get('/addnhanvien',controllers.nhanvien.add)
 		// .get('/detail-nhanvien/sp=:id',controllers.nhanvien.detail)
-	
+
 		.get('/update/nv=:id',controllers.nhanvien.update)
 		// .post('/delete/success',controllers.nhanvien.delete)
 		// .post('/addnhanvien/success',controllers.nhanvien.addSuccess)
@@ -56,14 +56,14 @@ module.exports=function(app)
 
 	var login=Router()
 		.get('/',controllers.login.index);
-	
+
 
 
 	app.use('/admin/dashboard',isloginedIn,dashboardRouter);
 	app.use('/profile',isloginedIn,profileRouter);
 	app.use('/admin/listnhanvien',isloginedIn,listNhanVien);
 	app.use('/admin/login',isloginedIn2,login);
-	
+
 
 	var QuanTriTuyenDuong = Router()
         .get('/', controllers.QuanTriTuyenDuong.index)
@@ -99,21 +99,26 @@ module.exports=function(app)
         .get('/DoanhThu/XemChuyenDiDaXuatPhat', controllers.QuanTriChuyenDi.xemChuyenDiDaXuatPhat)
         .get('/DoanhThu/XemTuyenDuong', controllers.QuanTriTuyenDuong.xemTuyenDuong)
         .post('/DoanhThu', controllers.ThongKe.thongKeDoanhThu);
-
-    
+		var taikhoan = Router()
+				.get('/xemtatcataikhoan',controllers.taikhoan.xemtatcataikhoan)
+				.get('/', controllers.taikhoan.index)
+				.post('/ThongKeTaiKhoanTheoDiem',controllers.taikhoan.thongketaikhoantheodiem)
+				.post('/SuaTaiKhoan',controllers.taikhoan.SuaTaiKhoan)
+				.post('/ThemTaiKhoan',controllers.taikhoan.ThemTaiKhoan)
    app.use('/QuanTriTuyenDuong', QuanTriTuyenDuong);
     app.use('/QuanTriChuyenDi', QuanTriChuyenDi);
     app.use('/QuanTriLoaiNhanVien', QuanTriLoaiNhanVien);
     app.use('/PhanCongTaiXeLaiChuyenDi', PhanCongTaiXeLaiChuyenDi);
     app.use('/ThongKe', ThongKe);
-	
+		app.use('/taikhoan',taikhoan);
+	//	app.use('/taikhoan_fix',taikhoan_fix);
 
 
 
-	
+
 
 	app.post('/admin/login',passport.authenticate('local.login', {
-				
+
 
 				successRedirect :'/admin/dashboard',
 				failureRedirect:'/admin/login',
