@@ -931,6 +931,8 @@ begin tran
 
 							waitfor delay '00:00:05'
 
+							set @error = 'Có lỗi trong lúc cập nhật dữ liệu'
+							raiserror('Có lỗi trong lúc cập nhật dữ liệu', 0, 0)
 							rollback tran
 							return
 						end
@@ -1370,6 +1372,21 @@ begin
 	end
 end
 go
+
+--Kiểm tra xem vé đã thanh toán chưa
+create procedure veDaThanhToan @MaVe varchar(10)
+as
+begin
+	if exists(select MaVe from PHUONGTRANG.DBO.VE where MaVe = @MaVe and TrangThaiThanhToan = 1)
+	begin
+		return 1
+	end
+	else
+	begin
+		return 0
+	end
+end
+
 --Thanh toán vé của khách hàng
 ------------------------------
 create procedure thanhToanVeKhachHang @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @TenDangNhap varchar(50), @SoTien int, @error nvarchar(100) out
@@ -1575,6 +1592,7 @@ begin tran
 	declare @nhanVienThanhToanCoTonTai int
 	declare @phuongThucThanhToanCoTonTai int
 	declare @giaVeThucVaSoTienGiongNhau int
+	declare @veDaThanhToan int
 
 	--Kiểm tra vé có tồn tại hay không
 	exec @veCoTonTai = veCoTonTai @MaVe
@@ -1595,17 +1613,26 @@ begin tran
 
 				if (@giaVeThucVaSoTienGiongNhau = 1)
 				begin
-					update PHUONGTRANG.DBO.VE
-					set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
-					where MaVe = @MaVe
+					exec @veDaThanhToan = veDaThanhToan @MaVe
 
-					set @error = ''
-
-					if (@@ERROR <> 0)
+					if (@veDaThanhToan = 1)
 					begin
-						raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
-						rollback tran 
-						return
+						set @error = 'Vé đã thanh toán'
+					end
+					else
+					begin
+						update PHUONGTRANG.DBO.VE
+						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
+						where MaVe = @MaVe
+
+						set @error = ''
+
+						if (@@ERROR <> 0)
+						begin
+							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+							rollback tran 
+							return
+						end
 					end
 				end
 				else
@@ -1629,6 +1656,258 @@ begin tran
 	end
 commit tran
 go
+
+--Thanh toán vé của nhân viên waitfor delay
+------------------------------------------
+create procedure thanhToanVeNhanVienWaitforDelay @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @MaNV varchar(10), @SoTien int, @error nvarchar(100) out
+as
+begin tran
+	--declare
+	declare @veCoTonTai int
+	declare @nhanVienThanhToanCoTonTai int
+	declare @phuongThucThanhToanCoTonTai int
+	declare @giaVeThucVaSoTienGiongNhau int
+	declare @veDaThanhToan int
+
+	--Kiểm tra vé có tồn tại hay không
+	exec @veCoTonTai = veCoTonTai @MaVe
+
+	if (@veCoTonTai = 1)
+	begin
+		exec @nhanVienThanhToanCoTonTai = nhanVienThanhToanCoTonTai @MaNV
+
+		if (@nhanVienThanhToanCoTonTai = 1)
+		begin
+			--Kiểm tra phương thức thanh toán có tồn tại hay không
+			exec @phuongThucThanhToanCoTonTai = phuongThucThanhToanCoTonTai @PhuongThucThanhToan
+
+			if (@phuongThucThanhToanCoTonTai = 1)
+			begin
+				--Kiểm tra giá vé thực và số tiền có giống nhau
+				exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
+
+				if (@giaVeThucVaSoTienGiongNhau = 1)
+				begin
+					exec @veDaThanhToan = veDaThanhToan @MaVe
+
+					if (@veDaThanhToan = 1)
+					begin
+						set @error = 'Vé đã thanh toán'
+					end
+					else
+					begin
+					
+						waitfor delay '00:00:05'
+
+						update PHUONGTRANG.DBO.VE
+						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
+						where MaVe = @MaVe
+
+						set @error = ''
+
+						if (@@ERROR <> 0)
+						begin
+							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+							rollback tran 
+							return
+						end
+					end
+				end
+				else
+				begin
+					set @error = 'Bạn đóng không đủ tiền'
+				end
+			end
+			else
+			begin
+				set @error = 'phương thức thanh toán không tồn tại'
+			end
+		end
+		else
+		begin
+			set @error = 'nhân viên thanh toán không tồn tại'
+		end
+	end
+	else
+	begin
+		set @error = 'Vé này không tồn tại'
+	end
+commit tran
+go
+
+--Thanh toán vé của nhân viên waitfor delay Repeatable Read
+-----------------------------------------------------------
+create procedure thanhToanVeNhanVienWaitforDelayRepeatableRead @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @MaNV varchar(10), @SoTien int, @error nvarchar(100) out
+as
+set transaction isolation level Repeatable read
+begin tran
+	--declare
+	declare @veCoTonTai int
+	declare @nhanVienThanhToanCoTonTai int
+	declare @phuongThucThanhToanCoTonTai int
+	declare @giaVeThucVaSoTienGiongNhau int
+	declare @veDaThanhToan int
+
+	--Kiểm tra vé có tồn tại hay không
+	exec @veCoTonTai = veCoTonTai @MaVe
+
+	if (@veCoTonTai = 1)
+	begin
+		exec @nhanVienThanhToanCoTonTai = nhanVienThanhToanCoTonTai @MaNV
+
+		if (@nhanVienThanhToanCoTonTai = 1)
+		begin
+			--Kiểm tra phương thức thanh toán có tồn tại hay không
+			exec @phuongThucThanhToanCoTonTai = phuongThucThanhToanCoTonTai @PhuongThucThanhToan
+
+			if (@phuongThucThanhToanCoTonTai = 1)
+			begin
+				--Kiểm tra giá vé thực và số tiền có giống nhau
+				exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
+
+				if (@giaVeThucVaSoTienGiongNhau = 1)
+				begin
+					exec @veDaThanhToan = veDaThanhToan @MaVe
+
+					if (@veDaThanhToan = 1)
+					begin
+						set @error = 'Vé đã thanh toán'
+					end
+					else
+					begin
+					
+						waitfor delay '00:00:05'
+
+						update PHUONGTRANG.DBO.VE
+						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
+						where MaVe = @MaVe
+
+						set @error = ''
+
+						if (@@ERROR <> 0)
+						begin
+							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+							rollback tran 
+							return
+						end
+					end
+				end
+				else
+				begin
+					set @error = 'Bạn đóng không đủ tiền'
+				end
+			end
+			else
+			begin
+				set @error = 'phương thức thanh toán không tồn tại'
+			end
+		end
+		else
+		begin
+			set @error = 'nhân viên thanh toán không tồn tại'
+		end
+	end
+	else
+	begin
+		set @error = 'Vé này không tồn tại'
+	end
+commit tran
+go
+
+--Vé đã thanh toán với XLock
+----------------------------
+create procedure veDaThanhToanXLock @MaVe varchar(10)
+as
+begin
+	if exists(select MaVe from PHUONGTRANG.DBO.VE with(Xlock) where MaVe = @MaVe and TrangThaiThanhToan = 1)
+	begin
+		return 1
+	end
+	else
+	begin
+		return 0
+	end
+end
+
+--Thanh toán vé của nhân viên waitfor delay XLock
+-------------------------------------------------
+create procedure thanhToanVeNhanVienWaitforDelayXLock @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @MaNV varchar(10), @SoTien int, @error nvarchar(100) out
+as
+set transaction isolation level repeatable read
+begin tran
+	--declare
+	declare @veCoTonTai int
+	declare @nhanVienThanhToanCoTonTai int
+	declare @phuongThucThanhToanCoTonTai int
+	declare @giaVeThucVaSoTienGiongNhau int
+	declare @veDaThanhToanXLock int
+
+	--Kiểm tra vé có tồn tại hay không
+	exec @veCoTonTai = veCoTonTai @MaVe
+
+	if (@veCoTonTai = 1)
+	begin
+		exec @nhanVienThanhToanCoTonTai = nhanVienThanhToanCoTonTai @MaNV
+
+		if (@nhanVienThanhToanCoTonTai = 1)
+		begin
+			--Kiểm tra phương thức thanh toán có tồn tại hay không
+			exec @phuongThucThanhToanCoTonTai = phuongThucThanhToanCoTonTai @PhuongThucThanhToan
+
+			if (@phuongThucThanhToanCoTonTai = 1)
+			begin
+				--Kiểm tra giá vé thực và số tiền có giống nhau
+				exec @giaVeThucVaSoTienGiongNhau = giaVeThucVaSoTienGiongNhau @MaVe, @SoTien
+
+				if (@giaVeThucVaSoTienGiongNhau = 1)
+				begin
+					exec @veDaThanhToanXLock = veDaThanhToanXLock @MaVe
+
+					if (@veDaThanhToanXLock = 1)
+					begin
+						set @error = 'Vé đã thanh toán'
+					end
+					else
+					begin
+					
+						waitfor delay '00:00:05'
+
+						update PHUONGTRANG.DBO.VE
+						set PhuongThucThanhToan = @PhuongThucThanhToan, NgayThanhToan = getdate(), NhanVienThanhToan = @MaNV, TrangThaiThanhToan = 1 
+						where MaVe = @MaVe
+
+						set @error = ''
+
+						if (@@ERROR <> 0)
+						begin
+							raiserror('Có lỗi trong lúc thanh toán vé', 0, 0)
+							rollback tran 
+							return
+						end
+					end
+				end
+				else
+				begin
+					set @error = 'Bạn đóng không đủ tiền'
+				end
+			end
+			else
+			begin
+				set @error = 'phương thức thanh toán không tồn tại'
+			end
+		end
+		else
+		begin
+			set @error = 'nhân viên thanh toán không tồn tại'
+		end
+	end
+	else
+	begin
+		set @error = 'Vé này không tồn tại'
+	end
+commit tran
+go
+
 ------------------------THỐNG KÊ DOANH THU----------------------------
 ----------------------------------------------------------------------
 
