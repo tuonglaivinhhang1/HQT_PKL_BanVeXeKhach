@@ -1,7 +1,7 @@
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-sm-12">
-            <form method="post" action="/ThanhToanVeNhanVien">
+            <form>
                 <div class="form-group">
                     <label for="MaVe">Mã vé</label>
                     <input name="MaVe" class="form-control" type="text" id="MaVe">
@@ -11,47 +11,113 @@
                     <label for="GiaVeThuc">Giá vé thực</label>
                     <input name="GiaVeThuc" class="form-control" type="text" id="GiaVeThuc">
                 </div>
-                <button type="submit" class="btn btn-default">Thanh Toán</button>
-                <div class="form-group">
-                    {{#if error}}
-                        <div class="panel panel-danger">
-                            <div class="panel-body"> Có lỗi trong quá trình thanh toán</div>
-                        </div>
-                    {{else}}
-                        {{#if errorMessage}}
-                            <div class="panel panel-warning">
-                                <div class="panel-body"> {{errorMessage}}</div>
-                            </div>
-                        {{else}}
-                            {{#if success}}
-                                <div class="panel panel-success">
-                                    <div class="panel-body"> Thanh toán thành công!!!!</div>
-                                </div>
-                            {{/if}}
-                        {{/if}}
-                    {{/if}}
+                <a id="ThanhToanVeNhanVien" class="btn btn-default">Thanh Toán</a>
+                <a id="ThanhToanVeNhanVienWaitforDelay" class="btn btn-default">Thanh Toán Waitfor delay</a>
+                <a id="ThanhToanVeNhanVienWaitforDelayRepeatableRead" class="btn btn-default">Thanh Toán Waitfor delay Repeatable Read</a>
+                <a id="ThanhToanVeNhanVienWaitforDelayXLock" class="btn btn-default">Thanh Toán Waitfor delay XLock</a>
+                <div id="panel" class="form-group">
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script>
-  $("#ButtonTim").click(function () {
-    console.log('click ButtonTim');
-    var MaVe = $("#MaVe").val();
-    $.post('/ThanhToanVeNhanVien/MaVe', {MaVe: MaVe}, function(result) {
-      console.log(result);
-        if (result.error) {
-            alert('Có lỗi xảy ra');
-        } else {
-          if (result.errorMessage) {
-            alert(result.errorMessage);
-          }
-          else {
-            console.log(result.data);
-            $("#GiaVeThuc").val(result.data);
-          }
-        }
+    $("#ButtonTim").click(function() {
+        console.log('click ButtonTim');
+        var MaVe = $("#MaVe").val();
+        $.post('/ThanhToanVeNhanVien/MaVe', {
+            MaVe: MaVe
+        }, function(result) {
+            console.log(result);
+            if (result.error) {
+                alert('Có lỗi xảy ra');
+            } else {
+                if (result.errorMessage) {
+                    alert(result.errorMessage);
+                } else {
+                    console.log(result.data);
+                    $("#GiaVeThuc").val(result.data);
+                }
+            }
+        });
     });
-  });
+
+    $("#ThanhToanVeNhanVien").click(function() {
+        var MaVe = $("#MaVe").val();
+        var GiaVeThuc = $("#GiaVeThuc").val();
+        $.post('/ThanhToanVeNhanVien', {
+            MaVe: MaVe,
+            GiaVeThuc: GiaVeThuc
+        }, function(result) {
+            if (result.error) {
+                $("#panel").append("<div class=\"panel panel-danger\"><div class=\"panel-body\"> Có lỗi trong quá trình thanh toán</div></div>");
+            } else {
+                if (result.errorMessage) {
+                    $("#panel").append("<div class=\"panel panel-warning\"><div class=\"panel-body\">" + result.errorMessage + "</div></div>");
+                } else {
+                    $("#panel").append("<div class=\"panel panel-success\"><div class=\"panel-body\"> Thanh toán thành công!!!!</div></div>");
+                }
+            }
+        });
+    });
+
+
+    $("#ThanhToanVeNhanVienWaitforDelay").click(function() {
+        var MaVe = $("#MaVe").val();
+        var GiaVeThuc = $("#GiaVeThuc").val();
+        $.post('/ThanhToanVeNhanVien/WaitforDelay', {
+            MaVe: MaVe,
+            GiaVeThuc: GiaVeThuc
+        }, function(result) {
+            if (result.error) {
+                $("#panel").append("<div class=\"panel panel-danger\"><div class=\"panel-body\"> Có lỗi trong quá trình thanh toán</div></div>");
+            } else {
+                if (result.errorMessage) {
+                    $("#panel").append("<div class=\"panel panel-warning\"><div class=\"panel-body\">" + result.errorMessage + "</div></div>");
+                } else {
+                    $("#panel").append("<div class=\"panel panel-success\"><div class=\"panel-body\"> Thanh toán thành công!!!!</div></div>");
+                }
+            }
+        });
+    });
+
+
+    $("#ThanhToanVeNhanVienWaitforDelayRepeatableRead").click(function() {
+        var MaVe = $("#MaVe").val();
+        var GiaVeThuc = $("#GiaVeThuc").val();
+        $.post('/ThanhToanVeNhanVien/WaitforDelayRepeatableRead', {
+            MaVe: MaVe,
+            GiaVeThuc: GiaVeThuc
+        }, function(result) {
+            if (result.error) {
+                $("#panel").append("<div class=\"panel panel-danger\"><div class=\"panel-body\"> Có lỗi trong quá trình thanh toán</div></div>");
+            } else {
+                if (result.errorMessage) {
+                    $("#panel").append("<div class=\"panel panel-warning\"><div class=\"panel-body\">" + result.errorMessage + "</div></div>");
+                } else {
+                    $("#panel").append("<div class=\"panel panel-success\"><div class=\"panel-body\"> Thanh toán thành công!!!!</div></div>");
+                }
+            }
+        });
+    });
+
+
+    $("#ThanhToanVeNhanVienWaitforDelayXLock").click(function() {
+        var MaVe = $("#MaVe").val();
+        var GiaVeThuc = $("#GiaVeThuc").val();
+        $.post('/ThanhToanVeNhanVien/WaitforDelayXLock', {
+            MaVe: MaVe,
+            GiaVeThuc: GiaVeThuc
+        }, function(result) {
+            if (result.error) {
+                $("#panel").append("<div class=\"panel panel-danger\"><div class=\"panel-body\"> Có lỗi trong quá trình thanh toán</div></div>");
+            } else {
+                if (result.errorMessage) {
+                    $("#panel").append("<div class=\"panel panel-warning\"><div class=\"panel-body\">" + result.errorMessage + "</div></div>");
+                } else {
+                    $("#panel").append("<div class=\"panel panel-success\"><div class=\"panel-body\"> Thanh toán thành công!!!!</div></div>");
+                }
+            }
+        });
+    });
 </script>

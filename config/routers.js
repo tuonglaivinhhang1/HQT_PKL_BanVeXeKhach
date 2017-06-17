@@ -163,7 +163,10 @@ module.exports=function(app)
     var ThanhToanVeNhanVien = Router()
         .get('/', controllers.ThanhToanVeNhanVien.index)
         .post('/MaVe', controllers.ThanhToanVeNhanVien.xemVe)
-        .post('/', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVien);
+        .post('/', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVien)
+		.post('/WaitforDelayXLock', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayXLock)
+				.post('/WaitforDelayRepeatableRead', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelayRepeatableRead)
+				.post('/WaitforDelay', controllers.ThanhToanVeNhanVien.thanhToanVeNhanVienWaitforDelay);
 
 
     app.use('/QuanTriTuyenDuong', isloginedIn, QuanTriTuyenDuong);
