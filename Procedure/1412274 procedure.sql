@@ -4,117 +4,6 @@ GO
 -- CSDL ban đầu như sau:																												                                    --
 -- Ve(MaVe, GiaVeThuc, TrangThaiVe, TrangThaiThanhToan, MaKhachHang, PhuongThucThanhToan, NgayThanhToan, NgayDatVe, NhanVienDatVe, MaGhe, MaXe, MaChuyenDi, NhanVienThanhToan)--
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---store procedure lấy danh sách nơi đi
-CREATE PROCEDURE LayNoiDi
-AS
-BEGIN
-	SELECT NoiXuatPhat 
-	FROM TUYENDUONG
-END
-GO
-
---store procedure lấy danh sách nơi đến
-CREATE PROCEDURE LayNoiDen @noidi nvarchar(50)
-AS
-BEGIN
-	SELECT NoiDen 
-	FROM TUYENDUONG
-	WHERE NoiXuatPhat = @noidi
-END
-GO
-
---store procedure lấy danh sách bến đi
-CREATE PROCEDURE LayBenDi @noidi nvarchar(50), @noiden nvarchar(50)
-AS
-BEGIN
-	SELECT BenDi
-	FROM TUYENDUONG
-	WHERE NoiXuatPhat = @noidi
-	AND NoiDen = @noiden
-END
-GO
-
---store procedure lấy danh sách bến đến
-CREATE PROCEDURE LayBenDen @noidi nvarchar(50), @noiden nvarchar(50), @bendi nvarchar(50)
-AS
-BEGIN
-	SELECT BenDen
-	FROM TUYENDUONG
-	WHERE NoiXuatPhat = @noidi
-	AND NoiDen = @noiden
-	AND BenDi = @bendi
-END
-GO
-
---store procedure lấy mã tuyến đường
-CREATE PROCEDURE LayMaTuyenDuong @noidi nvarchar(50), @noiden nvarchar(50), @bendi nvarchar(50), @benden nvarchar(50)
-AS
-BEGIN
-	SELECT MaTuyenDuong
-	FROM TUYENDUONG
-	WHERE NoiXuatPhat = @noidi
-	AND NoiDen = @noiden
-	AND BenDi = @bendi
-	AND BenDen = @benden
-END
-GO
-
---store procedure lấy thời gian xuất phát xuất phát từ tuyến đường đã chọn
-CREATE PROCEDURE LayDanhSachThoiGianXP @tuyenduong varchar(10)
-AS
-BEGIN
-	SELECT NgayGioXuatPhat
-	FROM CHUYENDI
-	WHERE TuyenDuong = @tuyenduong
-END
-GO
-
---store procedure lấy thời gian xuất phát xuất phát từ tuyến đường đã chọn
-CREATE PROCEDURE LayDanhSachThoiGianDen @tuyenduong varchar(10), @ngaygioxuatphat datetime 
-AS
-BEGIN
-	SELECT NgayGioDen
-	FROM CHUYENDI
-	WHERE TuyenDuong = @tuyenduong
-	AND NgayGioXuatPhat = @ngaygioxuatphat
-END
-GO
-
---Lây mã chuyến đi 
-CREATE PROCEDURE LayMaChuyenDi @tuyenduong varchar(10), @ngaygioxuatphat datetime, @ngaygioden datetime
-AS
-BEGIN
-	SELECT MaChuyenDi
-	FROM CHUYENDI
-	WHERE TuyenDuong = @tuyenduong
-	AND NgayGioXuatPhat = @ngaygioxuatphat
-	AND NgayGioDen = @ngaygioden
-END
-GO
-
---Lấy danh sách ghế trống
-CREATE PROCEDURE LayGheTrong @machuyendi varchar(10), @maxe varchar(10)
-AS
-BEGIN
-	SELECT ViTriGhe
-	FROM GHE
-	WHERE ViTriGhe NOT IN (SELECT MaGhe
-							FROM VE
-							WHERE @machuyendi = @machuyendi
-							AND MaXe = @maxe)
-END
-GO
-
-DROP PROCEDURE LayNoiDi
-DROP PROCEDURE LayNoiDen
-DROP PROCEDURE LayBenDi
-DROP PROCEDURE LayBenDen
-DROP PROCEDURE LayMaTuyenDuong
-DROP PROCEDURE LayDanhSachThoiGianXP
-DROP PROCEDURE LayDanhSachThoiGianDen
-DROP PROCEDURE LayMaChuyenDi
-DROP PROCEDURE LayGheTrong
-GO
 
 ------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------Các store dùng cho tính toán chính-------------------------------------------------
@@ -195,7 +84,6 @@ GO
 CREATE PROCEDURE DatVeKH @makh VARCHAR(10), @vitrighe VARCHAR(10), @maxe VARCHAR(10), @maphuongthuctt VARCHAR(10), @machuyendi VARCHAR(10), @manhanvienthanhtoan VARCHAR(10)
 AS
 BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITtED
 	--Các biến kiểm tra
 	DECLARE @ktmakh INT, @ktmaptttt INT, @ghethuocxe INT, @xethuocchuyendi INT, @ghettrong INT
 	--Các biến của vé 
@@ -354,20 +242,12 @@ BEGIN TRAN
 		RETURN
 	END
 
-	--Cap nhat lai tinh trang ghe
-	UPDATE GHE SET TinhTrangGhe = N'Đã đặt'
-	WHERE ViTriGhe = @vitrighe
-
 	--Them vào csdl cua KHUYENMAI_VE
 	IF (@makm IS NOT NULL)
 	BEGIN
 		INSERT INTO KHUYENMAI_VE
 		VALUES (@makm, @mave)
 	END
-
-	--Khối lệnh để test lỗi 
-	--WAITFOR DELAY '00:00:15'
-	--ROLLBACK TRAN
 COMMIT TRAN
 GO
 
@@ -375,7 +255,6 @@ GO
 CREATE PROCEDURE DatVeNV @makh VARCHAR(10), @vitrighe VARCHAR(10), @maxe VARCHAR(10), @maphuongthuctt VARCHAR(10), @machuyendi VARCHAR(10), @manhanvienthanhtoan VARCHAR(10),  @manvdatve VARCHAR(10), @error NVARCHAR(100) OUT
 AS
 BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 	--Các biến kiểm tra
 	DECLARE @ktmakh INT, @ktmaptttt INT, @ghethuocxe INT, @xethuocchuyendi INT, @ghettrong INT
 	--Các biến của vé 
@@ -541,20 +420,12 @@ BEGIN TRAN
 		RETURN
 	END
 
-	--Cap nhat lai tinh trang ghe
-	--UPDATE GHE SET TinhTrangGhe = N'Đã đặt'
-	--WHERE ViTriGhe = @vitrighe
-
 	--Them vào csdl cua KHUYENMAI_VE
 	IF (@makm IS NOT NULL)
 	BEGIN
 		INSERT INTO KHUYENMAI_VE
 		VALUES (@makm, @mave)
 	END
-
-	--Khối lệnh để test lỗi 
-	--WAITFOR DELAY '00:00:15'
-	--ROLLBACK TRAN
 COMMIT TRAN
 GO
 
@@ -562,7 +433,6 @@ GO
 CREATE PROCEDURE DoiVe @mave VARCHAR(10), @ghemoi VARCHAR(10), @xemoi VARCHAR(10), @chuyendimoi VARCHAR(10)
 AS
 BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITtED
 	--Không tồn tại mã vé hợp lệ
 	IF NOT EXISTS(SELECT *
 				  FROM VE
@@ -582,13 +452,6 @@ BEGIN TRAN
 		--Cập nhật lại ngày đặt cho vé
 		DECLARE @thoigiandoi DATETIME
 		SET @thoigiandoi = GETDATE()
-
-		--Bỏ mã ghế cũ, cập nhật lại tình trạng là trống
-		--DECLARE @ghecu VARCHAR(10)
-		--SET @ghecu = (SELECT MaGhe FROM VE WHERE MaVe = @mave)
-
-		--UPDATE GHE SET TinhTrangGhe = N'Trống'
-		--WHERE ViTriGhe = @ghecu
 
 		--Cập nhật lại vé
 		IF (@chuyendimoi IS NOT NULL)
@@ -646,10 +509,7 @@ BEGIN TRAN
 								--Cập nhật lại chuyến đi 
 								UPDATE VE SET MaChuyenDi = @chuyendimoi, GiaVeThuc = @giavethuc, MaGhe = @ghemoi, MaXe = @xemoi
 								WHERE MaVe = @mave
-								--Cập nhật lại tình trạng ghế mới
-								UPDATE GHE SET TinhTrangGhe = N'Đã đặt'
-								WHERE ViTriGhe = @ghemoi and MaXe = @xemoi
-							END
+							END	
 							ELSE
 							BEGIN
 								RAISERROR (N'Ghế không phải ghế trống', 16, 1)
@@ -706,9 +566,6 @@ BEGIN TRAN
 			END 
 		END
 	END
-	--Khối lệnh demo lỗi
-	--WAITFOR DELAY '00:00:15'
-	--ROLLBACK
 COMMIT TRAN
 GO
 
@@ -716,7 +573,6 @@ GO
 CREATE PROCEDURE XemVe @mave VARCHAR(10)
 AS
 BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITtED
 	--Khong tồn tại vé hợp lệ
 	IF NOT EXISTS(SELECT *
 				  FROM VE
@@ -728,21 +584,17 @@ BEGIN TRAN
 	END
 	ELSE
 	BEGIn
-		--WAITFOR DELAY '00:00:15'
+		--Xem thông tin vé
 		SELECT * 
 		FROM VE
 		WHERE MaVe = @mave
 	END
-	--WAITFOR DELAY '00:00:15'
-COMMIT TRAN
-GO
-
-CREATE PROCEDURE XemTatCaVe 
-AS
-BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITtED
-	SELECT * FROM VE
-	--WAITFOR DELAY '00:00:15'
+	--Xem thêm thông tin khách hàng có vé là mã vé nhập vào	
+	SELECT * 
+	FROM KHACHHANG
+	WHERE MaKhachHang IN (SELECT MaKhachHang
+							FROM VE
+							WHERE MaVe = @mave)
 COMMIT TRAN
 GO
 
@@ -794,268 +646,7 @@ BEGIN TRAN
 		WHERE v.MaChuyenDi = cd.MaChuyenDi AND v.TrangThaiVe = 1 AND v.TrangThaiThanhToan = 1
 		GROUP BY v.MaChuyenDi
 	END
-	WAITFOR DELAY '00:00:15' 
 COMMIT TRAN
 GO
 
-
---Xóa procedure 
-DROP PROCEDURE DatVeKH
-
-DROP PROCEDURE DatVeNV
-
-DROP PROCEDURE DoiVe
-
-DROP PROCEDURE DoiVe1
-
-DROP PROCEDURE HuyVe
-
-DROP PROCEDURE ThongKeVe_ChuyenDi
-
-DROP PROCEDURE XemVe
-
-DROP PROCEDURE XemTatCaVe
-
-DROP PROCEDURE XeThuocChuyenDi
-
-DROP PROCEDURE GheThuocxe
-
-DROP PROCEDURE KiemTraGheTrong
-
-DROP PROCEDURE KiemTraVeTonTai
-
-DROP PROCEDURE KiemTraPTTT
-
-DROP PROCEDURE KiemTraKHTonTai
-
---Thực thi test procedure
-EXEC DatVeKH 'KH003', 'B10', 'XE002', 'PTTT003', 'CD002', NULL
-GO
-
-EXEC DoiVe 'VE004', 'B1', 'XE003', 'CD002'
-GO
-
-EXEC ThongKeVe_ChuyenDi
-GO
-
-use PHUONGTRANG
-GO
---------------------------------------------------Lỗi Phantom--------------------------------------------------
---Transaction 1: để waitfor delay, ko đặt rollback
---EXEC XemVe2 
---GO
-EXEC ThongKeVe_ChuyenDi
-GO
-
---Transaction 2: Ko đặt waitfor delay, ko đặt rollback trước commit
-EXEC DatVeNV 'KH005', 'B10', 'XE002', 'PTTT003', 'CD002', 'NV006', 'NV004'
-GO
----------------------------------------------------------------------------------------------------------------
-
---------------------------------------------------Lỗi Dirty Read-------------------------------------------------- 
---Transaction 1: để waitfor delay, đặt rollback
-EXEC DoiVe 'VE004', 'B1', 'XE003', 'CD004'
-GO
-
---Transaction 2: Ko đặt waitfor delay, ko đặt rollback
-EXEC XemVe 'VE004'
-GO
-
-EXEC ThongKeVe_ChuyenDi
-GO
-
-------------------------------------------------------------------------------------------------------------------
-
-
---------------------------------------------------Lỗi Unrepeatable Read--------------------------------------------------- 
---Transaction 1: để waitfor delay, ko đặt rollback
-EXEC XemVe 'VE005'
-GO
-
---Transaction 2: Ko đặt waitfor delay, ko đặt rollback
-EXEC HuyVe 'VE005'
-GO
---------------------------------------------------------------------------------------------------------------------------
-
---------------------------------------------------Lỗi Lost Update--------------------------------------------------- 
---Transaction 1: để waitfor delay, ko đặt rollback
-EXEC DoiVe1 'VE004', 'A2', 'XE003', 'CD004'
-GO
-
---Transaction 2: 
-EXEC DoiVe1 'VE004', 'B2', 'XE003', 'CD004'
-GO
-select * from VE where MaVe = 'VE004'
---------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-SELECT * FROM VE
-SELECT * FROM GHE 
-SELECT * FROM CHUYENDI
-SELECT * FROM KHACHHANG
-SELECT * FROM KHUYENMAI_VE 
-EXEC HuyVe 'VE005'
-update GHE set TinhTrangGhe = N'Trống' where ViTriGhe = 'B10' and MaXe = 'XE002'
-UPDATE VE SET TrangThaiThanhToan = 1, PhuongThucThanhToan = 'PTTT003', NgayThanhToan = GETDATE(), NhanVienThanhToan = 'NV006'
-WHERE MaVe = 'VE002'
-GO
-
-UPDATE VE SET TrangThaiThanhToan = 1, TrangThaiVe = 1, PhuongThucThanhToan = 'PTTT003', NgayThanhToan = GETDATE(), NhanVienDatVe = 'NV004', NhanVienThanhToan = 'NV006'
-WHERE MaVe = 'VE004'
-GO
-
-ALTER PROCEDURE DoiVe1 @mave VARCHAR(10), @ghemoi VARCHAR(10), @xemoi VARCHAR(10), @chuyendimoi VARCHAR(10)
-AS
-BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
-	--Không tồn tại mã vé hợp lệ
-	IF NOT EXISTS(SELECT *
-				  FROM VE
-				  WHERE MaVe = @mave)
-	BEGIN
-		RAISERROR (N'Không tồn tại vé có mã nhập vào', 16, 1)
-		ROLLBACK TRAN
-	END
-	ELSE
-	BEGIN
-		WAITFOR DELAY '00:00:15'
-		--Các biến kiểm tra 
-		DECLARE @ghethuocxe INT, @xethuocchuyendi INT, @ghettrong INT
-		EXEC XeThuocChuyenDi @xemoi, @chuyendimoi, @xethuocchuyendi OUT
-		EXEC GheThuocxe @xemoi ,@ghemoi, @ghethuocxe OUT
-		EXEC KiemTraGheTrong @chuyendimoi, @ghemoi, @xemoi, @ghettrong OUT
-
-		--Cập nhật lại ngày đặt cho vé
-		DECLARE @thoigiandoi DATETIME
-		SET @thoigiandoi = GETDATE()
-
-		--Bỏ mã ghế cũ, cập nhật lại tình trạng là trống
-		DECLARE @ghecu VARCHAR(10)
-		SET @ghecu = (SELECT MaGhe FROM VE WHERE MaVe = @mave)
-
-		UPDATE GHE SET TinhTrangGhe = N'Trống'
-		WHERE ViTriGhe = @ghecu
-
-		--Cập nhật lại vé
-		IF (@chuyendimoi IS NOT NULL)
-		BEGIN
-			IF (@xemoi IS NOT NULL)
-			BEGIN
-				IF (@ghemoi IS NOT NULL)
-				BEGIN
-					DECLARE @giave INT, @giavethuc INT, @makm VARCHAR(10), @hinhthuckm NVARCHAR(50), @tylegiamgia INT, @tyle FLOAT
-		
-					IF EXISTS (SELECT MaKhuyenMai FROM KHUYENMAI WHERE NgayBatDau <= @thoigiandoi and NgayKetThuc >= @thoigiandoi)
-					BEGIN
-						SET @makm = (SELECT MaKhuyenMai 
-										FROM KHUYENMAI 
-										WHERE NgayBatDau <= @thoigiandoi and NgayKetThuc >= @thoigiandoi)
-
-						SET @hinhthuckm =  (SELECT HinhThucKhuyenMai
-											FROM KHUYENMAI 
-											WHERE MaKhuyenMai = @makm)
-
-						SET @tylegiamgia = (SELECT TyLeGiamGia
-											FROM KHUYENMAI 
-											WHERE MaKhuyenMai = @makm)
-
-						--Kiểm tra loại hình thứckhuyến mãi để tính giá chuyến đi
-						IF (@hinhthuckm like N'%Tặng quà%')
-						BEGIN
-							SET @giavethuc = (SELECT GiaDuKien
-												FROM CHUYENDI
-												WHERE MaChuyenDi = @chuyendimoi)
-						END
-						ELSE
-						BEGIN
-							SET @giave = (SELECT GiaDuKien
-										  FROM CHUYENDI
-										  WHERE MaChuyenDi = @chuyendimoi)
-							SET @tyle = convert(float, @tylegiamgia) / convert(float, 100)
-							--Trừ cho phần giảm của khuyến mãi
-							SET @giavethuc = @giave * (1 - @tyle)
-						END
-					END
-					ELSE
-					BEGIN
-						SET @giavethuc = (SELECT GiaDuKien
-											FROM CHUYENDI
-											WHERE MaChuyenDi = @chuyendimoi)
-					END
-					
-					IF (@xethuocchuyendi = 1)
-					BEGIN
-						IF (@ghethuocxe = 1)
-						BEGIN
-							IF (@ghettrong = 1)
-							BEGIN
-								--Cập nhật lại chuyến đi 
-								UPDATE VE WITH (XLOCK) SET MaChuyenDi = @chuyendimoi, GiaVeThuc = @giavethuc, MaGhe = @ghemoi, MaXe = @xemoi
-								WHERE MaVe = @mave
-								--Cập nhật lại tình trạng ghế mới
-								UPDATE GHE SET TinhTrangGhe = N'Đã đặt'
-								WHERE ViTriGhe = @ghemoi and MaXe = @xemoi
-							END
-							ELSE
-							BEGIN
-								RAISERROR (N'Ghế không phải ghế trống', 16, 1)
-								ROLLBACK TRAN
-								RETURN
-							END
-						END
-						ELSE
-						BEGIN
-							RAISERROR (N'Ghế không thuộc xe', 16, 1)
-							ROLLBACK TRAN
-							RETURN
-						END
-					END
-					ELSE
-					BEGIN
-						RAISERROR (N'Xe không thuộc chuyến đi', 16, 1)
-						ROLLBACK TRAN
-						RETURN
-					END
-				END
-				ELSE
-				BEGIN
-					RAISERROR (N'Phát sinh lỗi trong việc đổi vé', 16, 1)
-					ROLLBACK TRAN
-					RETURN
-				END
-			END
-			ELSE
-			BEGIN
-				RAISERROR (N'Phát sinh lỗi trong việc đổi vé', 16, 1)
-				ROLLBACK TRAN
-				RETURN
-			END
-		END
-		ELSE
-		BEGIN
-			RAISERROR (N'Phát sinh lỗi trong việc đổi vé', 16, 1)
-			ROLLBACK TRAN
-			RETURN
-		END
-		--Cập nhật lại tham chiếu khuyến mãi vé 
-		IF (@makm IS NOT NULL)
-		BEGIN
-			IF EXISTS (SELECT MaKhuyenMai, MaVe FROM KHUYENMAI_VE WHERE MaVe = @mave)
-			BEGIN
-				UPDATE KHUYENMAI_VE SET MaKhuyenMai = @makm
-				WHERE MaVe = @mave
-			END
-			ELSE
-			BEGIn
-				INSERT INTO KHUYENMAI_VE
-				VALUES (@makm, @mave)
-			END 
-		END
-	END
-
-	
-COMMIT TRAN
-GO
 

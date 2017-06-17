@@ -1386,7 +1386,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Thanh toán vé của khách hàng
 ------------------------------
 create procedure thanhToanVeKhachHang @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @TenDangNhap varchar(50), @SoTien int, @error nvarchar(100) out
@@ -1828,7 +1828,7 @@ begin
 		return 0
 	end
 end
-
+go
 --Thanh toán vé của nhân viên waitfor delay XLock
 -------------------------------------------------
 create procedure thanhToanVeNhanVienWaitforDelayXLock @MaVe varchar(10), @PhuongThucThanhToan varchar(10), @MaNV varchar(10), @SoTien int, @error nvarchar(100) out
